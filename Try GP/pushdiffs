@@ -1,0 +1,1653 @@
+3,4c3,4
+<  * PushScript                                                                *
+<  * Copyright (C) 2008-2010 Jonathan Klein                                    *
+---
+>  * The breve Simulation Environment                                          *
+>  * Copyright (C) 2007 Jonathan Klein                                         *
+28c28
+<   return inOther == this;
+---
+> 	return inOther == this;
+32c32
+<   return inOther == this;
+---
+> 	return inOther == this;
+36c36
+<   return inOther == this;
+---
+> 	return inOther == this;
+42c42
+<   var str = "";
+---
+> 	var str = "";
+44,45c44,45
+<   for( var i = 0; i < this.length; i++ ) 
+<     str += this[ i ] + " ";
+---
+> 	for( var i = 0; i < this.length; i++ ) 
+> 		str += this[ i ] + " ";
+47c47
+<   return "( " + str + ")";
+---
+> 	return "( " + str + ")";
+51c51
+<   var newCopy = new Array();
+---
+> 	var newCopy = new Array();
+53,58c53,58
+<   for( var i = 0; i < this.length; i++ ) {
+<     if( isPushProgram( this[ i ] ) )
+<       newCopy.push( this[ i ].copy() );  
+<     else
+<       newCopy.push( this[ i ] );  
+<   }
+---
+> 	for( var i = 0; i < this.length; i++ ) {
+> 		if( isPushProgram( this[ i ] ) )
+> 			newCopy.push( this[ i ].copy() );	
+> 		else
+> 			newCopy.push( this[ i ] );	
+> 	}
+60c60
+<   return newCopy;
+---
+> 	return newCopy;
+64c64
+<   if( !isPushProgram( inOther ) ) return false;
+---
+> 	if( !isPushProgram( inOther ) ) return false;
+66c66
+<   if( inOther.length != this.length ) return false;
+---
+> 	if( inOther.length != this.length ) return false;
+68,70c68,70
+<   for( var i = 0; i < this.length; i++ ) {
+<     if( !this[ i ].equals( inOther[ i ] ) ) return false;
+<   }
+---
+> 	for( var i = 0; i < this.length; i++ ) {
+> 		if( !this[ i ].equals( inOther[ i ] ) ) return false;
+> 	}
+72c72
+<   return true;
+---
+> 	return true;
+76c76
+<   this._value = inValue;  
+---
+> 	this._value = inValue;	
+78,79c78,79
+<   this.toString = function() {
+<     var decimal = /\./;
+---
+> 	this.toString = function() {
+> 		var decimal = /\./;
+81,91c81,91
+<     if( !decimal.test( this._value ) ) {
+<       // Force the float to look like a float so that it will be parsed back in correctly!
+<       return this._value + ".0";
+<     } else {
+<       return this._value;  
+<     }
+<   }
+< 
+<   this.equals = function( inOther ) {
+<     return isPushFloat( inOther ) && this._value == inOther._value;
+<   }
+---
+> 		if( !decimal.test( this._value ) ) {
+> 			// Force the float to look like a float so that it will be parsed back in correctly!
+> 			return this._value + ".0";
+> 		} else {
+> 			return this._value;	
+> 		}
+> 	}
+> 
+> 	this.equals = function( inOther ) {
+> 		return isPushFloat( inOther ) && this._value == inOther._value;
+> 	}
+95c95
+<   this._value = inValue;  
+---
+> 	this._value = inValue;	
+97,103c97,103
+<   this.toString = function() {
+<     return this._value;  
+<   }
+< 
+<   this.equals = function( inOther ) {
+<     return isPushInt( inOther ) && this._value == inOther._value;
+<   }
+---
+> 	this.toString = function() {
+> 		return this._value;	
+> 	}
+> 
+> 	this.equals = function( inOther ) {
+> 		return isPushInt( inOther ) && this._value == inOther._value;
+> 	}
+107,108c107,108
+<   this._function = inFunction;
+<   this._stack = inStack;
+---
+> 	this._function = inFunction;
+> 	this._stack = inStack;
+110,112c110,112
+<   this.call = function( inInterpreter ) {
+<     this._function( inInterpreter, this._stack );
+<   }
+---
+> 	this.call = function( inInterpreter ) {
+> 		this._function( inInterpreter, this._stack );
+> 	}
+116,117c116,117
+<   this._value = inValue;
+<   this._stack = inStack;
+---
+> 	this._value = inValue;
+> 	this._stack = inStack;
+119,121c119,121
+<   this.call = function( inInterpreter ) {
+<     this._stack.push( this._value );
+<   }
+---
+> 	this.call = function( inInterpreter ) {
+> 		this._stack.push( this._value );
+> 	}
+129c129
+<   return typeof( inObject ) == "object" && inObject[ '_isPushProgram' ] == true;
+---
+> 	return typeof( inObject ) == "object" && inObject[ '_isPushProgram' ] == true;
+133c133
+<   return typeof( inObject ) == "object" && inObject.constructor == pushFloat;
+---
+> 	return typeof( inObject ) == "object" && inObject.constructor == pushFloat;
+137c137
+<   return typeof( inObject ) == "object" && inObject.constructor == pushInt;
+---
+> 	return typeof( inObject ) == "object" && inObject.constructor == pushInt;
+141c141
+<   return typeof( inObject ) == "object" && inObject.constructor == pushInstruction;
+---
+> 	return typeof( inObject ) == "object" && inObject.constructor == pushInstruction;
+145c145
+<   return typeof( inObject ) == "object" && inObject.constructor == pushDefine;
+---
+> 	return typeof( inObject ) == "object" && inObject.constructor == pushDefine;
+154c154
+<   inStack.push( Math.random() > 0.5 );
+---
+> 	inStack.push( Math.random() > 0.5 );
+158c158
+<   inStack.push( Math.random() * 10 );
+---
+> 	inStack.push( Math.random() * 10 );
+162c162
+<   inStack.push( "n" + inInterpreter._nameCounter++ );
+---
+> 	inStack.push( "n" + inInterpreter._nameCounter++ );
+170,174c170,174
+<   if( inStack.length > 1 ) {
+<     var o1 = inStack.pop();
+<     var o2 = inStack.pop();
+<     inInterpreter.boolStack.push( o2 && o1 );
+<   }
+---
+> 	if( inStack.length > 1 ) {
+> 		var o1 = inStack.pop();
+> 		var o2 = inStack.pop();
+> 		inInterpreter.boolStack.push( o2 && o1 );
+> 	}
+178,182c178,182
+<   if( inStack.length > 1 ) {
+<     var o1 = inStack.pop();
+<     var o2 = inStack.pop();
+<     inInterpreter.boolStack.push( o2 || o1 );
+<   }
+---
+> 	if( inStack.length > 1 ) {
+> 		var o1 = inStack.pop();
+> 		var o2 = inStack.pop();
+> 		inInterpreter.boolStack.push( o2 || o1 );
+> 	}
+186,188c186,188
+<   if( inStack.length > 0 ) {
+<     inInterpreter.boolStack.push( !inStack.pop() );
+<   }
+---
+> 	if( inStack.length > 0 ) {
+> 		inInterpreter.boolStack.push( !inStack.pop() );
+> 	}
+192,194c192,194
+<   if( inStack.length > 0 ) {
+<     inStack.push( inInterpreter.intStack.pop() );
+<   }
+---
+> 	if( inStack.length > 0 ) {
+> 		inStack.push( inInterpreter.intStack.pop() );
+> 	}
+198,200c198,200
+<   if( inStack.length > 0 ) {
+<     inStack.push( inInterpreter.floatStack.pop() );
+<   }
+---
+> 	if( inStack.length > 0 ) {
+> 		inStack.push( inInterpreter.floatStack.pop() );
+> 	}
+204,205c204,205
+<   if( inStack.length > 0 ) {
+<     var num = 0;
+---
+> 	if( inStack.length > 0 ) {
+> 		var num = 0;
+207,209c207,209
+<     if( inInterpreter.boolStack.pop() == true ) num = 1;
+<     inStack.push( num );
+<   }
+---
+> 		if( inInterpreter.boolStack.pop() == true ) num = 1;
+> 		inStack.push( num );
+> 	}
+218,220c218,220
+<   if( inInterpreter.execStack.length > 0 ) {
+<     inStack.push( inInterpreter.execStack.pop() );
+<   }
+---
+> 	if( inInterpreter.execStack.length > 0 ) {
+> 		inStack.push( inInterpreter.execStack.pop() );
+> 	}
+224,231c224,231
+<   if( inStack.length > 0 ) {
+<     var top = inStack.pop();
+<     if( isPushProgram( top ) ) {
+<       inStack.push( top.shift() );
+<     } else {
+<       inStack.push( top );
+<     }
+<   }
+---
+> 	if( inStack.length > 0 ) {
+> 		var top = inStack.pop();
+> 		if( isPushProgram( top ) ) {
+> 			inStack.push( top.shift() );
+> 		} else {
+> 			inStack.push( top );
+> 		}
+> 	}
+235,243c235,243
+<   if( inStack.length > 0 ) {
+<     var top = inStack.pop();
+<     if( isPushProgram( top ) ) {
+<       top.shift();
+<       inStack.push( top );
+<     } else {
+<       inStack.push( new Array() );
+<     }
+<   }
+---
+> 	if( inStack.length > 0 ) {
+> 		var top = inStack.pop();
+> 		if( isPushProgram( top ) ) {
+> 			top.shift();
+> 			inStack.push( top );
+> 		} else {
+> 			inStack.push( new Array() );
+> 		}
+> 	}
+247,257c247,257
+<   if( inStack.length > 0 && inInterpreter.intStack.length > 0 ) {
+<     var top = inStack.pop();
+<     var index = inInterpreter.intStack.pop();
+< 
+<     if( isPushProgram( top ) ) {
+<       index %= top.length;
+<       inStack.push( top[ ( top.length - 1 ) - index ] );
+<     } else {
+<       inStack.push( top );
+<     }
+<   }
+---
+> 	if( inStack.length > 0 && inInterpreter.intStack.length > 0 ) {
+> 		var top = inStack.pop();
+> 		var index = inInterpreter.intStack.pop();
+> 
+> 		if( isPushProgram( top ) ) {
+> 			index %= top.length;
+> 			inStack.push( top[ ( top.length - 1 ) - index ] );
+> 		} else {
+> 			inStack.push( top );
+> 		}
+> 	}
+261,271c261,271
+<   if( inStack.length > 1 ) {
+<     var program = inStack.pop();
+<     var sub = inStack.pop();
+< 
+<     for( var i = 0; i < program.length; i++ ) {
+<       if( program[ i ].equals( sub ) ) {
+<         inInterpreter.boolStack.push( true );
+<         return;
+<       }
+<     }
+<   }
+---
+> 	if( inStack.length > 1 ) {
+> 		var program = inStack.pop();
+> 		var sub = inStack.pop();
+> 
+> 		for( var i = 0; i < program.length; i++ ) {
+> 			if( program[ i ].equals( sub ) ) {
+> 				inInterpreter.boolStack.push( true );
+> 				return;
+> 			}
+> 		}
+> 	}
+273c273
+<   inInterpreter.boolStack.push( false );
+---
+> 	inInterpreter.boolStack.push( false );
+277,280c277,280
+<   if( inStack.length > 1 ) {
+<     var o1 = inStack.pop();
+<     var o2 = inStack.pop();
+<     var newCode = new Array();
+---
+> 	if( inStack.length > 1 ) {
+> 		var o1 = inStack.pop();
+> 		var o2 = inStack.pop();
+> 		var newCode = new Array();
+282,283c282,283
+<     newCode.push( o2 );
+<     newCode.push( o1 );
+---
+> 		newCode.push( o2 );
+> 		newCode.push( o1 );
+285,286c285,286
+<     inStack.push( newCode );
+<   }
+---
+> 		inStack.push( newCode );
+> 	}
+290,302c290,302
+<   if( inStack.length > 1 ) {
+<     var cdr = inStack.pop();
+<     var car = inStack.pop();
+< 
+<     if( !isPushProgram( cdr ) ) {
+<       var program = new Array();
+<       program.push( cdr );
+<       cdr = program;
+<     }
+< 
+<     cdr.unshift( car );
+<     inStack.push( cdr );
+<   }
+---
+> 	if( inStack.length > 1 ) {
+> 		var cdr = inStack.pop();
+> 		var car = inStack.pop();
+> 
+> 		if( !isPushProgram( cdr ) ) {
+> 			var program = new Array();
+> 			program.push( cdr );
+> 			cdr = program;
+> 		}
+> 
+> 		cdr.unshift( car );
+> 		inStack.push( cdr );
+> 	}
+308,311c308,311
+<   if( inInterpreter.codeStack.length > 0 ) {
+<     inInterpreter.execStack.push( "CODE.POP" );
+<     inInterpreter.execStack.push( inInterpreter.codeStack[ inInterpreter.codeStack.length - 1 ] );
+<   }
+---
+> 	if( inInterpreter.codeStack.length > 0 ) {
+> 		inInterpreter.execStack.push( "CODE.POP" );
+> 		inInterpreter.execStack.push( inInterpreter.codeStack[ inInterpreter.codeStack.length - 1 ] );
+> 	}
+315,316c315,316
+<   if( inInterpreter.codeStack.length > 0 ) 
+<     inInterpreter.execStack.push( inInterpreter.codeStack.pop() );
+---
+> 	if( inInterpreter.codeStack.length > 0 ) 
+> 		inInterpreter.execStack.push( inInterpreter.codeStack.pop() );
+320,321c320,321
+<   if( inStack.length > 0 && inInterpreter.intStack.length > 0 ) {
+<     var count = inInterpreter.intStack.pop();
+---
+> 	if( inStack.length > 0 && inInterpreter.intStack.length > 0 ) {
+> 		var count = inInterpreter.intStack.pop();
+323c323
+<     if( count < 1 ) return;
+---
+> 		if( count < 1 ) return;
+325,326c325,326
+<     var code = inStack.pop();
+<     var program = new Array();
+---
+> 		var code = inStack.pop();
+> 		var program = new Array();
+328,331c328,331
+<     program.push( new pushInt( 0 ) );
+<     program.push( new pushInt( count - 1 ) );
+<     program.push( "EXEC.DO*RANGE" );
+<     program.push( code );
+---
+> 		program.push( new pushInt( 0 ) );
+> 		program.push( new pushInt( count - 1 ) );
+> 		program.push( "EXEC.DO*RANGE" );
+> 		program.push( code );
+333,334c333,334
+<     inInterpreter.execStack.push( program );
+<   }
+---
+> 		inInterpreter.execStack.push( program );
+> 	}
+338,339c338,339
+<   if( inStack.length > 0 && inInterpreter.intStack.length > 1 ) {
+<     var code = inStack.pop();
+---
+> 	if( inStack.length > 0 && inInterpreter.intStack.length > 1 ) {
+> 		var code = inStack.pop();
+341,345c341,345
+<     if( !isPushProgram( code ) ) {
+<       var program = new Array();
+<       program.push( code );
+<       code = program;
+<     }
+---
+> 		if( !isPushProgram( code ) ) {
+> 			var program = new Array();
+> 			program.push( code );
+> 			code = program;
+> 		}
+347c347
+<     code.splice( 0, 0, 'INTEGER.POP' );
+---
+> 		code.splice( 0, 0, 'INTEGER.POP' );
+349c349
+<     inStack.push( code );
+---
+> 		inStack.push( code );
+351,352c351,352
+<     pushInstructionDoRange( inInterpreter, inStack );
+<   }
+---
+> 		pushInstructionDoRange( inInterpreter, inStack );
+> 	}
+356,368c356,368
+<   if( inStack.length > 0 && inInterpreter.intStack.length > 1 ) {
+<     var end = inInterpreter.intStack.pop();
+<     var start = inInterpreter.intStack.pop();
+<     var code = inStack.pop();
+< 
+<     var inc = 1;
+<     if( end > start ) inc = -1;
+< 
+<     for( var i = end; i != start + inc; i += inc ) {
+<       inInterpreter.execStack.push( code );
+<       inInterpreter.execStack.push( new pushInt( i ) );
+<     }
+<   }
+---
+> 	if( inStack.length > 0 && inInterpreter.intStack.length > 1 ) {
+> 		var end = inInterpreter.intStack.pop();
+> 		var start = inInterpreter.intStack.pop();
+> 		var code = inStack.pop();
+> 
+> 		var inc = 1;
+> 		if( end > start ) inc = -1;
+> 
+> 		for( var i = end; i != start + inc; i += inc ) {
+> 			inInterpreter.execStack.push( code );
+> 			inInterpreter.execStack.push( new pushInt( i ) );
+> 		}
+> 	}
+372,381c372,381
+<   if( inStack.length > 1 && inInterpreter.boolStack.length > 0 ) {
+<     var cond = inInterpreter.boolStack.pop();
+<     var ifFalse = inStack.pop();
+<     var ifTrue = inStack.pop();
+< 
+<     if( cond )
+<       inInterpreter.execStack.push( ifTrue );
+<     else 
+<       inInterpreter.execStack.push( ifFalse );
+<   }
+---
+> 	if( inStack.length > 1 && inInterpreter.boolStack.length > 0 ) {
+> 		var cond = inInterpreter.boolStack.pop();
+> 		var ifFalse = inStack.pop();
+> 		var ifTrue = inStack.pop();
+> 
+> 		if( cond )
+> 			inInterpreter.execStack.push( ifTrue );
+> 		else 
+> 			inInterpreter.execStack.push( ifFalse );
+> 	}
+385,388c385,388
+<   if( inStack.length > 0 ) {
+<     var code = inStack.pop();
+<     inInterpreter.intStack.push( code.length );
+<   }
+---
+> 	if( inStack.length > 0 ) {
+> 		var code = inStack.pop();
+> 		inInterpreter.intStack.push( code.length );
+> 	}
+392,395c392,395
+<   if( inStack.length > 0 ) {
+<     var code = inStack.pop();
+<     inInterpreter.boolStack.push( isPushProgram( code ) && code.length == 0 );
+<   }
+---
+> 	if( inStack.length > 0 ) {
+> 		var code = inStack.pop();
+> 		inInterpreter.boolStack.push( isPushProgram( code ) && code.length == 0 );
+> 	}
+399,401c399,401
+<   if( inStack.length > 0 ) {
+<     inInterpreter.boolStack.push( !isPushProgram( inStack.pop() ) );
+<   }
+---
+> 	if( inStack.length > 0 ) {
+> 		inInterpreter.boolStack.push( !isPushProgram( inStack.pop() ) );
+> 	}
+408,410c408,410
+<   if( inStack.length > 1 ) {
+<     inStack.splice( inStack.length - 1, 1 );
+<   }
+---
+> 	if( inStack.length > 1 ) {
+> 		inStack.splice( inStack.length - 1, 1 );
+> 	}
+414,427c414,427
+<   if( inStack.length > 2 ) {
+<       var a = inStack.pop();
+<       var b = inStack.pop();
+<       var c = inStack.pop();
+< 
+<       var list = new Array();
+< 
+<       list.push( b );
+<       list.push( c );
+< 
+<       inStack.push( list );
+<       inStack.push( c );
+<       inStack.push( a );
+<     }
+---
+> 	if( inStack.length > 2 ) {
+> 			var a = inStack.pop();
+> 			var b = inStack.pop();
+> 			var c = inStack.pop();
+> 
+> 			var list = new Array();
+> 
+> 			list.push( b );
+> 			list.push( c );
+> 
+> 			inStack.push( list );
+> 			inStack.push( c );
+> 			inStack.push( a );
+> 		}
+431,437c431,437
+<   if( inStack.length > 0 ) {
+<       var top = inStack.pop();
+<       var list = new Array();
+< 
+<       list.push( "EXEC.Y" );
+<       list.push( top );
+<   }
+---
+> 	if( inStack.length > 0 ) {
+> 			var top = inStack.pop();
+> 			var list = new Array();
+> 
+> 			list.push( "EXEC.Y" );
+> 			list.push( top );
+> 	}
+445,449c445,449
+<   if( inStack.length > 1 ) {
+<     var o1 = inStack.pop();
+<     var o2 = inStack.pop();
+<     inInterpreter.boolStack.push( o2 > o1 );
+<   }
+---
+> 	if( inStack.length > 1 ) {
+> 		var o1 = inStack.pop();
+> 		var o2 = inStack.pop();
+> 		inInterpreter.boolStack.push( o2 > o1 );
+> 	}
+453,457c453,457
+<   if( inStack.length > 1 ) {
+<     var o1 = inStack.pop();
+<     var o2 = inStack.pop();
+<     inInterpreter.boolStack.push( o2 < o1 );
+<   }
+---
+> 	if( inStack.length > 1 ) {
+> 		var o1 = inStack.pop();
+> 		var o2 = inStack.pop();
+> 		inInterpreter.boolStack.push( o2 < o1 );
+> 	}
+461,465c461,465
+<   if( inStack.length > 1 ) {
+<     var o1 = inStack.pop();
+<     var o2 = inStack.pop();
+<     inInterpreter.boolStack.push( o2.equals( o1 ) );
+<   }
+---
+> 	if( inStack.length > 1 ) {
+> 		var o1 = inStack.pop();
+> 		var o2 = inStack.pop();
+> 		inInterpreter.boolStack.push( o2.equals( o1 ) );
+> 	}
+473,477c473,477
+<   if( inStack.length > 1 ) {
+<     var o1 = inStack.pop();
+<     var o2 = inStack.pop();
+<     inStack.push( o2 + o1 );
+<   }
+---
+> 	if( inStack.length > 1 ) {
+> 		var o1 = inStack.pop();
+> 		var o2 = inStack.pop();
+> 		inStack.push( o2 + o1 );
+> 	}
+481,485c481,485
+<   if( inStack.length > 1 ) {
+<     var o1 = inStack.pop();
+<     var o2 = inStack.pop();
+<     inStack.push( o2 - o1 );
+<   }
+---
+> 	if( inStack.length > 1 ) {
+> 		var o1 = inStack.pop();
+> 		var o2 = inStack.pop();
+> 		inStack.push( o2 - o1 );
+> 	}
+489,491c489,491
+<   if( inStack.length > 0 ) {
+<     inStack.push( Math.cos( inStack.pop() ) );
+<   }
+---
+> 	if( inStack.length > 0 ) {
+> 		inStack.push( Math.cos( inStack.pop() ) );
+> 	}
+495,497c495,497
+<   if( inStack.length > 0 ) {
+<     inStack.push( Math.sin( inStack.pop() ) );
+<   }
+---
+> 	if( inStack.length > 0 ) {
+> 		inStack.push( Math.sin( inStack.pop() ) );
+> 	}
+501,503c501,503
+<   if( inStack.length > 0 ) {
+<     inStack.push( Math.tan( inStack.pop() ) );
+<   }
+---
+> 	if( inStack.length > 0 ) {
+> 		inStack.push( Math.tan( inStack.pop() ) );
+> 	}
+507,511c507,511
+<   if( inStack.length > 1 ) {
+<     var o1 = inStack.pop();
+<     var o2 = inStack.pop();
+<     inStack.push( o2 * o1 );
+<   }
+---
+> 	if( inStack.length > 1 ) {
+> 		var o1 = inStack.pop();
+> 		var o2 = inStack.pop();
+> 		inStack.push( o2 * o1 );
+> 	}
+515,516c515,516
+<   if( inStack.length > 1 ) {
+<     var o1 = inStack.pop();
+---
+> 	if( inStack.length > 1 ) {
+> 		var o1 = inStack.pop();
+518,525c518,525
+<     if( o1 == 0.0 ) { // oops!  protect the divide and return;
+<       inStack.push( o1 ); 
+<       return;
+<     }
+< 
+<     var o2 = inStack.pop();
+<     inStack.push( o2 / o1 );
+<   }
+---
+> 		if( o1 == 0.0 ) { // oops!  protect the divide and return;
+> 			inStack.push( o1 ); 
+> 			return;
+> 		}
+> 
+> 		var o2 = inStack.pop();
+> 		inStack.push( o2 / o1 );
+> 	}
+529,533c529,533
+<   if( inStack.length > 1 ) {
+<     var o1 = inStack.pop();
+<     var o2 = inStack.pop();
+<     inStack.push( o2 % o1 );
+<   }
+---
+> 	if( inStack.length > 1 ) {
+> 		var o1 = inStack.pop();
+> 		var o2 = inStack.pop();
+> 		inStack.push( o2 % o1 );
+> 	}
+536,540c536,540
+<   if( inStack.length > 1 ) {
+<     var o1 = inStack.pop();
+<     var o2 = inStack.pop();
+<     inStack.push( Math.min( o1, o2 ) );
+<   }
+---
+> 	if( inStack.length > 1 ) {
+> 		var o1 = inStack.pop();
+> 		var o2 = inStack.pop();
+> 		inStack.push( Math.min( o1, o2 ) );
+> 	}
+544,548c544,548
+<   if( inStack.length > 1 ) {
+<     var o1 = inStack.pop();
+<     var o2 = inStack.pop();
+<     inStack.push( Math.max( o1, o2 ) );
+<   }
+---
+> 	if( inStack.length > 1 ) {
+> 		var o1 = inStack.pop();
+> 		var o2 = inStack.pop();
+> 		inStack.push( Math.max( o1, o2 ) );
+> 	}
+556,558c556,558
+<   if( inStack.length > 0 ) {
+<     inStack.pop();
+<   }
+---
+> 	if( inStack.length > 0 ) {
+> 		inStack.pop();
+> 	}
+562c562
+<   inInterpreter.intStack.push( inStack.length );
+---
+> 	inInterpreter.intStack.push( inStack.length );
+566,568c566,568
+<   if( inStack.length > 0 ) {
+<     inStack.push( inStack[ inStack.length - 1 ] );
+<   }
+---
+> 	if( inStack.length > 0 ) {
+> 		inStack.push( inStack[ inStack.length - 1 ] );
+> 	}
+572,574c572,574
+<   if( inStack.length > 0 && inInterpreter.nameStack.length > 0 ) {
+<     inInterpreter[ inInterpreter.nameStack.pop() ] = new pushDefine( inStack, inStack.pop() );
+<   }
+---
+> 	if( inStack.length > 0 && inInterpreter.nameStack.length > 0 ) {
+> 		inInterpreter[ inInterpreter.nameStack.pop() ] = new pushDefine( inStack, inStack.pop() );
+> 	}
+578c578
+<   var intReq = 1;
+---
+> 	var intReq = 1;
+580c580
+<   if( inStack == inInterpreter.intStack ) intReq = 2;
+---
+> 	if( inStack == inInterpreter.intStack ) intReq = 2;
+582,583c582,583
+<   if( inInterpreter.intStack.length >= intReq && inStack.length > 0 ) {
+<     var index = inInterpreter.intStack.pop();
+---
+> 	if( inInterpreter.intStack.length >= intReq && inStack.length > 0 ) {
+> 		var index = inInterpreter.intStack.pop();
+585,587c585,587
+<     if( index < inStack.length )
+<       inStack.push( inStack.splice( inStack.length - ( index + 1 ), 1 )[ 0 ] )
+<   }
+---
+> 		if( index < inStack.length )
+> 			inStack.push( inStack.splice( inStack.length - ( index + 1 ), 1 )[ 0 ] )
+> 	}
+591c591
+<   var intReq = 1;
+---
+> 	var intReq = 1;
+593c593
+<   if( inStack == inInterpreter.intStack ) intReq = 2;
+---
+> 	if( inStack == inInterpreter.intStack ) intReq = 2;
+595,596c595,596
+<   if( inInterpreter.intStack.length >= intReq && inStack.length > 0 ) {
+<     var index = inInterpreter.intStack.pop();
+---
+> 	if( inInterpreter.intStack.length >= intReq && inStack.length > 0 ) {
+> 		var index = inInterpreter.intStack.pop();
+598,600c598,600
+<     if( index < inStack.length )
+<       inStack.push( inStack[ inStack.length - ( index + 1 ) ] )
+<   }
+---
+> 		if( index < inStack.length )
+> 			inStack.push( inStack[ inStack.length - ( index + 1 ) ] )
+> 	}
+604c604
+<   var intReq = 1;
+---
+> 	var intReq = 1;
+606c606
+<   if( inStack == inInterpreter.intStack ) intReq = 2;
+---
+> 	if( inStack == inInterpreter.intStack ) intReq = 2;
+608,609c608,609
+<   if( inInterpreter.intStack.length >= intReq && inStack.length > 0 ) {
+<     var index = inInterpreter.intStack.pop();
+---
+> 	if( inInterpreter.intStack.length >= intReq && inStack.length > 0 ) {
+> 		var index = inInterpreter.intStack.pop();
+611,615c611,615
+<     if( index < inStack.length ) {
+<       var replace = inStack.pop();
+<       inStack.splice( inStack.length - index, 0, replace );
+<     }
+<   }
+---
+> 		if( index < inStack.length ) {
+> 			var replace = inStack.pop();
+> 			inStack.splice( inStack.length - index, 0, replace );
+> 		}
+> 	}
+619,624c619,624
+<   if( inStack.length > 1 ) {
+<     var o1 = inStack.pop();
+<     var o2 = inStack.pop();
+<     inStack.push( o1 );
+<     inStack.push( o2 );
+<   }
+---
+> 	if( inStack.length > 1 ) {
+> 		var o1 = inStack.pop();
+> 		var o2 = inStack.pop();
+> 		inStack.push( o1 );
+> 		inStack.push( o2 );
+> 	}
+628,631c628,631
+<   if( inStack.length > 2 ) {
+<     var index = inStack.length - 3;
+<     inStack.push( inStack.splice( index, 1 )[ 0 ] );
+<   }
+---
+> 	if( inStack.length > 2 ) {
+> 		var index = inStack.length - 3;
+> 		inStack.push( inStack.splice( index, 1 )[ 0 ] );
+> 	}
+635,636c635,636
+<   // Do not construct a new stack -- we need to preserve our custom accessors.
+<   inStack.splice( 0, inStack.length );
+---
+> 	// Do not construct a new stack -- we need to preserve our custom accessors.
+> 	inStack.splice( 0, inStack.length );
+640,641c640,641
+<   inInterpreter.floatStack.push( inInterpreter[ 'inputValue' ] );
+<   inInterpreter.intStack.push( inInterpreter[ 'inputValue' ] );
+---
+> 	inInterpreter.floatStack.push( inInterpreter[ 'inputValue' ] );
+> 	inInterpreter.intStack.push( inInterpreter[ 'inputValue' ] );
+645,885c645,880
+<   this.floatStack = [];
+<   this.execStack = [];
+<   this.codeStack = [];
+<   this.intStack = [];
+<   this.boolStack = [];
+<   this.nameStack = [];
+< 
+<   this._nameCounter = 0;
+< 
+<   this.intStack.push = function( inValue ) {
+<       this.parentpush = Array.prototype.push;
+<       this.parentpush( parseInt( inValue ) );
+<   };
+< 
+<   this.boolStack.push = function( inValue ) {
+<       this.parentpush = Array.prototype.push;
+<       this.parentpush( inValue != 0 );
+<   };
+< 
+<   this.codeStack.push = function( inValue ) {
+<       this.parentpush = Array.prototype.push;
+< 
+<       if( isPushProgram( inValue ) ) inValue = inValue.copy();
+< 
+<       this.parentpush( inValue );
+<   };
+< 
+<   this.execStack.push = function( inValue ) {
+<       this.parentpush = Array.prototype.push;
+< 
+<       if( isPushProgram( inValue ) ) inValue = inValue.copy();
+< 
+<       this.parentpush( inValue );
+<   };
+< 
+<   this.clearStacks = function() {
+<     this.floatStack.splice( 0, this.floatStack.length );
+<     this.execStack.splice( 0, this.execStack.length );
+<     this.codeStack.splice( 0, this.codeStack.length );
+<     this.intStack.splice( 0, this.intStack.length );
+<     this.boolStack.splice( 0, this.boolStack.length );
+<     this.nameStack.splice( 0, this.nameStack.length );
+<   }
+< 
+<   this.toString = function() {
+<     var text = "Float stack contents: " + this.floatStack + "<br>";
+<     text += "Int stack contents: " + this.intStack + "<br>";
+<     text += "Bool stack contents: " + this.boolStack + "<br>";
+<     text += "Name stack contents: " + this.nameStack + "<br>";
+<     text += "Code stack contents: " + this.codeStack + "<br>";
+<     text += "Exec stack contents: " + this.execStack + "<br>";
+<     return text;
+<   }
+< 
+<   this.floatStackTop = function() {
+<     return this.floatStack[ this.floatStack.length - 1 ];
+<   }
+< 
+<   this.intStackTop = function() {
+<     return this.intStack[ this.intStack.length - 1 ];
+<   }
+< 
+<   this.boolStackTop = function() {
+<     return this.boolStack[ this.boolStack.length - 1 ];
+<   }
+< 
+<   this.nameStackTop = function() {
+<     return this.boolStack[ this.nameStack.length - 1 ];
+<   }
+< 
+<   this.execStackTop = function() {
+<     return this.execStack[ this.execStack.length - 1 ];
+<   }
+< 
+<   this.codeStackTop = function() {
+<     return this.codeStack[ this.codeStack.length - 1 ];
+<   }
+< 
+<   this[ 'INTEGER.FROMFLOAT' ] = new pushInstruction( this.intStack, pushInstructionFromFloat );
+<   this[ 'BOOLEAN.FROMFLOAT' ] = new pushInstruction( this.boolStack, pushInstructionFromFloat );
+< 
+<   this[ 'FLOAT.FROMINTEGER' ] = new pushInstruction( this.floatStack, pushInstructionFromInteger );
+<   this[ 'BOOLEAN.FROMINTEGER' ] = new pushInstruction( this.boolStack, pushInstructionFromInteger );
+< 
+<   this[ 'FLOAT.FROMBOOLEAN' ] = new pushInstruction( this.floatStack, pushInstructionFromBoolean );
+<   this[ 'INTEGER.FROMBOOLEAN' ] = new pushInstruction( this.integerStack, pushInstructionFromBoolean );
+< 
+<   this[ 'FLOAT.COS' ] = new pushInstruction( this.floatStack, pushInstructionCos );
+<   this[ 'FLOAT.SIN' ] = new pushInstruction( this.floatStack, pushInstructionSin );
+<   this[ 'FLOAT.TAN' ] = new pushInstruction( this.floatStack, pushInstructionTan );
+< 
+<   this[ 'INTEGER.>' ] = new pushInstruction( this.intStack, pushInstructionGreaterThan );
+<   this[ 'FLOAT.>' ] = new pushInstruction( this.floatStack, pushInstructionGreaterThan );
+< 
+<   this[ 'INTEGER.<' ] = new pushInstruction( this.intStack, pushInstructionLessThan );
+<   this[ 'FLOAT.<' ] = new pushInstruction( this.floatStack, pushInstructionLessThan );
+< 
+<   this[ 'INTEGER.=' ] = new pushInstruction( this.intStack, pushInstructionEquals  );
+<   this[ 'FLOAT.=' ] = new pushInstruction( this.floatStack, pushInstructionEquals );
+<   this[ 'BOOLEAN.=' ] = new pushInstruction( this.boolStack, pushInstructionEquals );
+<   this[ 'NAME.=' ] = new pushInstruction( this.nameStack, pushInstructionEquals );
+<   this[ 'EXEC.=' ] = new pushInstruction( this.execStack, pushInstructionEquals );
+<   this[ 'CODE.=' ] = new pushInstruction( this.codeStack, pushInstructionEquals );
+< 
+<   this[ 'INTEGER.+' ] = new pushInstruction( this.intStack, pushInstructionAdd );
+<   this[ 'FLOAT.+' ] = new pushInstruction( this.floatStack, pushInstructionAdd );
+< 
+<   this[ 'INTEGER.-' ] = new pushInstruction( this.intStack, pushInstructionSubtract );
+<   this[ 'FLOAT.-' ] = new pushInstruction( this.floatStack, pushInstructionSubtract );
+< 
+<   this[ 'INTEGER./' ] = new pushInstruction( this.intStack, pushInstructionDivide );
+<   this[ 'FLOAT./' ] = new pushInstruction( this.floatStack, pushInstructionDivide );
+< 
+<   this[ 'INTEGER.*' ] = new pushInstruction( this.intStack, pushInstructionMultiply );
+<   this[ 'FLOAT.*' ] = new pushInstruction( this.floatStack, pushInstructionMultiply );
+< 
+<   this[ 'INTEGER.%' ] = new pushInstruction( this.intStack, pushInstructionModulus );
+<   this[ 'FLOAT.%' ] = new pushInstruction( this.floatStack, pushInstructionModulus);
+< 
+<   this[ 'INTEGER.MIN' ] = new pushInstruction( this.intStack, pushInstructionMin );
+<   this[ 'FLOAT.MIN' ] = new pushInstruction( this.floatStack, pushInstructionMin );
+< 
+<   this[ 'INTEGER.MAX' ] = new pushInstruction( this.intStack, pushInstructionMax );
+<   this[ 'FLOAT.MAX' ] = new pushInstruction( this.floatStack, pushInstructionMax );
+< 
+<   this[ 'FLOAT.DEFINE' ] = new pushInstruction( this.floatStack, pushInstructionDefine );
+<   this[ 'INTEGER.DEFINE' ] = new pushInstruction( this.intStack, pushInstructionDefine );
+<   this[ 'CODE.DEFINE' ] = new pushInstruction( this.codeStack, pushInstructionDefine );
+<   this[ 'EXEC.DEFINE' ] = new pushInstruction( this.execStack, pushInstructionDefine );
+<   this[ 'BOOLEAN.DEFINE' ] = new pushInstruction( this.boolStack, pushInstructionDefine );
+< 
+<   this[ 'FLOAT.POP' ] = new pushInstruction( this.floatStack, pushInstructionPop );
+<   this[ 'INTEGER.POP' ] = new pushInstruction( this.intStack, pushInstructionPop );
+<   this[ 'CODE.POP' ] = new pushInstruction( this.codeStack, pushInstructionPop );
+<   this[ 'EXEC.POP' ] = new pushInstruction( this.execStack, pushInstructionPop );
+<   this[ 'BOOLEAN.POP' ] = new pushInstruction( this.boolStack, pushInstructionPop );
+<   this[ 'NAME.POP' ] = new pushInstruction( this.nameStack, pushInstructionPop );
+< 
+<   this[ 'FLOAT.DUP' ] = new pushInstruction( this.floatStack, pushInstructionDup );
+<   this[ 'INTEGER.DUP' ] = new pushInstruction( this.intStack, pushInstructionDup );
+<   this[ 'CODE.DUP' ] = new pushInstruction( this.codeStack, pushInstructionDup );
+<   this[ 'EXEC.DUP' ] = new pushInstruction( this.execStack, pushInstructionDup );
+<   this[ 'BOOLEAN.DUP' ] = new pushInstruction( this.boolStack, pushInstructionDup );
+<   this[ 'NAME.DUP' ] = new pushInstruction( this.nameStack, pushInstructionDup );
+< 
+<   this[ 'FLOAT.YANK' ] = new pushInstruction( this.floatStack, pushInstructionYank );
+<   this[ 'INTEGER.YANK' ] = new pushInstruction( this.intStack, pushInstructionYank );
+<   this[ 'CODE.YANK' ] = new pushInstruction( this.codeStack, pushInstructionYank );
+<   this[ 'EXEC.YANK' ] = new pushInstruction( this.execStack, pushInstructionYank );
+<   this[ 'BOOLEAN.YANK' ] = new pushInstruction( this.boolStack, pushInstructionYank );
+<   this[ 'NAME.YANK' ] = new pushInstruction( this.nameStack, pushInstructionYank );
+< 
+<   this[ 'FLOAT.YANKDUP' ] = new pushInstruction( this.floatStack, pushInstructionYankDup );
+<   this[ 'INTEGER.YANKDUP' ] = new pushInstruction( this.intStack, pushInstructionYankDup );
+<   this[ 'CODE.YANKDUP' ] = new pushInstruction( this.codeStack, pushInstructionYankDup );
+<   this[ 'EXEC.YANKDUP' ] = new pushInstruction( this.execStack, pushInstructionYankDup );
+<   this[ 'BOOLEAN.YANKDUP' ] = new pushInstruction( this.boolStack, pushInstructionYankDup );
+<   this[ 'NAME.YANKDUP' ] = new pushInstruction( this.nameStack, pushInstructionYankDup );
+< 
+<   this[ 'FLOAT.SHOVE' ] = new pushInstruction( this.floatStack, pushInstructionShove );
+<   this[ 'INTEGER.SHOVE' ] = new pushInstruction( this.intStack, pushInstructionShove );
+<   this[ 'CODE.SHOVE' ] = new pushInstruction( this.codeStack, pushInstructionShove );
+<   this[ 'EXEC.SHOVE' ] = new pushInstruction( this.execStack, pushInstructionShove );
+<   this[ 'BOOLEAN.SHOVE' ] = new pushInstruction( this.boolStack, pushInstructionShove );
+<   this[ 'NAME.SHOVE' ] = new pushInstruction( this.nameStack, pushInstructionShove );
+< 
+<   this[ 'FLOAT.ROT' ] = new pushInstruction( this.floatStack, pushInstructionRot );
+<   this[ 'INTEGER.ROT' ] = new pushInstruction( this.intStack, pushInstructionRot );
+<   this[ 'CODE.ROT' ] = new pushInstruction( this.codeStack, pushInstructionRot );
+<   this[ 'EXEC.ROT' ] = new pushInstruction( this.execStack, pushInstructionRot );
+<   this[ 'BOOLEAN.ROT' ] = new pushInstruction( this.boolStack, pushInstructionRot );
+<   this[ 'NAME.ROT' ] = new pushInstruction( this.nameStack, pushInstructionRot );
+< 
+<   this[ 'FLOAT.STACKDEPTH' ] = new pushInstruction( this.floatStack, pushInstructionStackdepth );
+<   this[ 'INTEGER.STACKDEPTH' ] = new pushInstruction( this.intStack, pushInstructionStackdepth );
+<   this[ 'CODE.STACKDEPTH' ] = new pushInstruction( this.codeStack, pushInstructionStackdepth );
+<   this[ 'EXEC.STACKDEPTH' ] = new pushInstruction( this.execStack, pushInstructionStackdepth );
+<   this[ 'BOOLEAN.STACKDEPTH' ] = new pushInstruction( this.boolStack, pushInstructionStackdepth );
+<   this[ 'NAME.STACKDEPTH' ] = new pushInstruction( this.nameStack, pushInstructionStackdepth );
+< 
+<   this[ 'FLOAT.SWAP' ] = new pushInstruction( this.floatStack, pushInstructionSwap );
+<   this[ 'INTEGER.SWAP' ] = new pushInstruction( this.intStack, pushInstructionSwap );
+<   this[ 'CODE.SWAP' ] = new pushInstruction( this.codeStack, pushInstructionSwap );
+<   this[ 'EXEC.SWAP' ] = new pushInstruction( this.execStack, pushInstructionSwap );
+<   this[ 'BOOLEAN.SWAP' ] = new pushInstruction( this.boolStack, pushInstructionSwap );
+<   this[ 'NAME.SWAP' ] = new pushInstruction( this.nameStack, pushInstructionSwap );
+< 
+<   this[ 'FLOAT.FLUSH' ] = new pushInstruction( this.floatStack, pushInstructionFlush );
+<   this[ 'INTEGER.FLUSH' ] = new pushInstruction( this.intStack, pushInstructionFlush );
+<   this[ 'CODE.FLUSH' ] = new pushInstruction( this.codeStack, pushInstructionFlush );
+<   this[ 'EXEC.FLUSH' ] = new pushInstruction( this.execStack, pushInstructionFlush );
+<   this[ 'BOOLEAN.FLUSH' ] = new pushInstruction( this.boolStack, pushInstructionFlush );
+<   this[ 'NAME.FLUSH' ] = new pushInstruction( this.nameStack, pushInstructionFlush );
+< 
+<   this[ 'BOOLEAN.AND' ] = new pushInstruction( this.boolStack, pushInstructionAnd );
+<   this[ 'BOOLEAN.OR' ] = new pushInstruction( this.boolStack, pushInstructionOr );
+<   this[ 'BOOLEAN.NOT' ] = new pushInstruction( this.boolStack, pushInstructionNot );
+< 
+<   this[ 'CODE.QUOTE' ] = new pushInstruction( this.codeStack, pushInstructionQuote );
+<   this[ 'CODE.CAR' ] = new pushInstruction( this.codeStack, pushInstructionCar );
+<   this[ 'CODE.CDR' ] = new pushInstruction( this.codeStack, pushInstructionCdr );
+<   this[ 'CODE.CONTAINS' ] = new pushInstruction( this.codeStack, pushInstructionContains );
+<   this[ 'CODE.NTH' ] = new pushInstruction( this.codeStack, pushInstructionNth );
+<   this[ 'CODE.LIST' ] = new pushInstruction( this.codeStack, pushInstructionList );
+<   this[ 'CODE.CONS' ] = new pushInstruction( this.codeStack, pushInstructionCons );
+<   this[ 'CODE.DO' ] = new pushInstruction( this.codeStack, pushInstructionDo );
+<   this[ 'CODE.DO*' ] = new pushInstruction( this.codeStack, pushInstructionDoStar );
+<   this[ 'CODE.DO*RANGE' ] = new pushInstruction( this.codeStack, pushInstructionDoRange );
+<   this[ 'CODE.DO*COUNT' ] = new pushInstruction( this.codeStack, pushInstructionDoCount );
+<   this[ 'CODE.DO*TIMES' ] = new pushInstruction( this.codeStack, pushInstructionDoTimes );
+<   this[ 'CODE.IF' ] = new pushInstruction( this.codeStack, pushInstructionIf );
+<   this[ 'CODE.NULL' ] = new pushInstruction( this.codeStack, pushInstructionNull );
+<   this[ 'CODE.ATOM' ] = new pushInstruction( this.codeStack, pushInstructionAtom );
+<   this[ 'CODE.LENGTH' ] = new pushInstruction( this.codeStack, pushInstructionLength );
+<   this[ 'CODE.NOOP' ] = new pushInstruction( this.codeStack, pushInstructionNoop );
+< 
+<   this[ 'EXEC.DO*RANGE' ] = new pushInstruction( this.execStack, pushInstructionDoRange );
+<   this[ 'EXEC.DO*TIMES' ] = new pushInstruction( this.execStack, pushInstructionDoTimes );
+<   this[ 'EXEC.DO*COUNT' ] = new pushInstruction( this.execStack, pushInstructionDoCount );
+<   this[ 'EXEC.IF' ] = new pushInstruction( this.execStack, pushInstructionIf );
+<   this[ 'EXEC.S' ] = new pushInstruction( this.execStack, pushInstructionS );
+<   this[ 'EXEC.K' ] = new pushInstruction( this.execStack, pushInstructionK );
+<   this[ 'EXEC.Y' ] = new pushInstruction( this.execStack, pushInstructionY );
+< 
+<   this[ 'BOOLEAN.RAND' ] = new pushInstruction( this.boolStack, pushInstructionRandomBool );
+<   this[ 'INTEGER.RAND' ] = new pushInstruction( this.intStack, pushInstructionRandomNumber );
+<   this[ 'FLOAT.RAND' ] = new pushInstruction( this.floatStack, pushInstructionRandomNumber );
+<   this[ 'NAME.RAND' ] = new pushInstruction( this.nameStack, pushInstructionRandomName );
+< 
+<   this[ 'TRUE' ] = new pushDefine( this.boolStack, true );
+<   this[ 'FALSE' ] = new pushDefine( this.boolStack, false );
+< 
+<   this[ 'INPUT' ] = float_input;
+< 
+< }
+< 
+< /**
+<  * Runs a parsed Push program.
+<  * 
+<  * @return 0 upon success, or -1 on error.
+<  */
+---
+> 	this.floatStack = [];
+> 	this.execStack = [];
+> 	this.codeStack = [];
+> 	this.intStack = [];
+> 	this.boolStack = [];
+> 	this.nameStack = [];
+> 
+> 	this._nameCounter = 0;
+> 
+> 	this.intStack.push = function( inValue ) {
+> 			this.parentpush = Array.prototype.push;
+> 	    this.parentpush( parseInt( inValue ) );
+> 	};
+> 
+> 	this.boolStack.push = function( inValue ) {
+> 			this.parentpush = Array.prototype.push;
+> 	    this.parentpush( inValue != 0 );
+> 	};
+> 
+> 	this.codeStack.push = function( inValue ) {
+> 			this.parentpush = Array.prototype.push;
+> 
+> 			if( isPushProgram( inValue ) ) inValue = inValue.copy();
+> 
+> 	    this.parentpush( inValue );
+> 	};
+> 
+> 	this.execStack.push = function( inValue ) {
+> 			this.parentpush = Array.prototype.push;
+> 
+> 			if( isPushProgram( inValue ) ) inValue = inValue.copy();
+> 
+> 	    this.parentpush( inValue );
+> 	};
+> 
+> 	this.clearStacks = function() {
+> 		this.floatStack.splice( 0, this.floatStack.length );
+> 		this.execStack.splice( 0, this.execStack.length );
+> 		this.codeStack.splice( 0, this.codeStack.length );
+> 		this.intStack.splice( 0, this.intStack.length );
+> 		this.boolStack.splice( 0, this.boolStack.length );
+> 		this.nameStack.splice( 0, this.nameStack.length );
+> 	}
+> 
+> 	this.toString = function() {
+> 		var text = "Float stack contents: " + this.floatStack + "<br>";
+> 		text += "Int stack contents: " + this.intStack + "<br>";
+> 		text += "Bool stack contents: " + this.boolStack + "<br>";
+> 		text += "Name stack contents: " + this.nameStack + "<br>";
+> 		text += "Code stack contents: " + this.codeStack + "<br>";
+> 		text += "Exec stack contents: " + this.execStack + "<br>";
+> 		return text;
+> 	}
+> 
+> 	this.floatStackTop = function() {
+> 		return this.floatStack[ this.floatStack.length - 1 ];
+> 	}
+> 
+> 	this.intStackTop = function() {
+> 		return this.intStack[ this.intStack.length - 1 ];
+> 	}
+> 
+> 	this.boolStackTop = function() {
+> 		return this.boolStack[ this.boolStack.length - 1 ];
+> 	}
+> 
+> 	this.nameStackTop = function() {
+> 		return this.boolStack[ this.nameStack.length - 1 ];
+> 	}
+> 
+> 	this.execStackTop = function() {
+> 		return this.execStack[ this.execStack.length - 1 ];
+> 	}
+> 
+> 	this.codeStackTop = function() {
+> 		return this.codeStack[ this.codeStack.length - 1 ];
+> 	}
+> 
+> 	this[ 'INTEGER.FROMFLOAT' ] = new pushInstruction( this.intStack, pushInstructionFromFloat );
+> 	this[ 'BOOLEAN.FROMFLOAT' ] = new pushInstruction( this.boolStack, pushInstructionFromFloat );
+> 
+> 	this[ 'FLOAT.FROMINTEGER' ] = new pushInstruction( this.floatStack, pushInstructionFromInteger );
+> 	this[ 'BOOLEAN.FROMINTEGER' ] = new pushInstruction( this.boolStack, pushInstructionFromInteger );
+> 
+> 	this[ 'FLOAT.FROMBOOLEAN' ] = new pushInstruction( this.floatStack, pushInstructionFromBoolean );
+> 	this[ 'INTEGER.FROMBOOLEAN' ] = new pushInstruction( this.integerStack, pushInstructionFromBoolean );
+> 
+> 	this[ 'FLOAT.COS' ] = new pushInstruction( this.floatStack, pushInstructionCos );
+> 	this[ 'FLOAT.SIN' ] = new pushInstruction( this.floatStack, pushInstructionSin );
+> 	this[ 'FLOAT.TAN' ] = new pushInstruction( this.floatStack, pushInstructionTan );
+> 
+> 	this[ 'INTEGER.>' ] = new pushInstruction( this.intStack, pushInstructionGreaterThan );
+> 	this[ 'FLOAT.>' ] = new pushInstruction( this.floatStack, pushInstructionGreaterThan );
+> 
+> 	this[ 'INTEGER.<' ] = new pushInstruction( this.intStack, pushInstructionLessThan );
+> 	this[ 'FLOAT.<' ] = new pushInstruction( this.floatStack, pushInstructionLessThan );
+> 
+> 	this[ 'INTEGER.=' ] = new pushInstruction( this.intStack, pushInstructionEquals  );
+> 	this[ 'FLOAT.=' ] = new pushInstruction( this.floatStack, pushInstructionEquals );
+> 	this[ 'BOOLEAN.=' ] = new pushInstruction( this.boolStack, pushInstructionEquals );
+> 	this[ 'NAME.=' ] = new pushInstruction( this.nameStack, pushInstructionEquals );
+> 	this[ 'EXEC.=' ] = new pushInstruction( this.execStack, pushInstructionEquals );
+> 	this[ 'CODE.=' ] = new pushInstruction( this.codeStack, pushInstructionEquals );
+> 
+> 	this[ 'INTEGER.+' ] = new pushInstruction( this.intStack, pushInstructionAdd );
+> 	this[ 'FLOAT.+' ] = new pushInstruction( this.floatStack, pushInstructionAdd );
+> 
+> 	this[ 'INTEGER.-' ] = new pushInstruction( this.intStack, pushInstructionSubtract );
+> 	this[ 'FLOAT.-' ] = new pushInstruction( this.floatStack, pushInstructionSubtract );
+> 
+> 	this[ 'INTEGER./' ] = new pushInstruction( this.intStack, pushInstructionDivide );
+> 	this[ 'FLOAT./' ] = new pushInstruction( this.floatStack, pushInstructionDivide );
+> 
+> 	this[ 'INTEGER.*' ] = new pushInstruction( this.intStack, pushInstructionMultiply );
+> 	this[ 'FLOAT.*' ] = new pushInstruction( this.floatStack, pushInstructionMultiply );
+> 
+> 	this[ 'INTEGER.%' ] = new pushInstruction( this.intStack, pushInstructionModulus );
+> 	this[ 'FLOAT.%' ] = new pushInstruction( this.floatStack, pushInstructionModulus);
+> 
+> 	this[ 'INTEGER.MIN' ] = new pushInstruction( this.intStack, pushInstructionMin );
+> 	this[ 'FLOAT.MIN' ] = new pushInstruction( this.floatStack, pushInstructionMin );
+> 
+> 	this[ 'INTEGER.MAX' ] = new pushInstruction( this.intStack, pushInstructionMax );
+> 	this[ 'FLOAT.MAX' ] = new pushInstruction( this.floatStack, pushInstructionMax );
+> 
+> 	this[ 'FLOAT.DEFINE' ] = new pushInstruction( this.floatStack, pushInstructionDefine );
+> 	this[ 'INTEGER.DEFINE' ] = new pushInstruction( this.intStack, pushInstructionDefine );
+> 	this[ 'CODE.DEFINE' ] = new pushInstruction( this.codeStack, pushInstructionDefine );
+> 	this[ 'EXEC.DEFINE' ] = new pushInstruction( this.execStack, pushInstructionDefine );
+> 	this[ 'BOOLEAN.DEFINE' ] = new pushInstruction( this.boolStack, pushInstructionDefine );
+> 
+> 	this[ 'FLOAT.POP' ] = new pushInstruction( this.floatStack, pushInstructionPop );
+> 	this[ 'INTEGER.POP' ] = new pushInstruction( this.intStack, pushInstructionPop );
+> 	this[ 'CODE.POP' ] = new pushInstruction( this.codeStack, pushInstructionPop );
+> 	this[ 'EXEC.POP' ] = new pushInstruction( this.execStack, pushInstructionPop );
+> 	this[ 'BOOLEAN.POP' ] = new pushInstruction( this.boolStack, pushInstructionPop );
+> 	this[ 'NAME.POP' ] = new pushInstruction( this.nameStack, pushInstructionPop );
+> 
+> 	this[ 'FLOAT.DUP' ] = new pushInstruction( this.floatStack, pushInstructionDup );
+> 	this[ 'INTEGER.DUP' ] = new pushInstruction( this.intStack, pushInstructionDup );
+> 	this[ 'CODE.DUP' ] = new pushInstruction( this.codeStack, pushInstructionDup );
+> 	this[ 'EXEC.DUP' ] = new pushInstruction( this.execStack, pushInstructionDup );
+> 	this[ 'BOOLEAN.DUP' ] = new pushInstruction( this.boolStack, pushInstructionDup );
+> 	this[ 'NAME.DUP' ] = new pushInstruction( this.nameStack, pushInstructionDup );
+> 
+> 	this[ 'FLOAT.YANK' ] = new pushInstruction( this.floatStack, pushInstructionYank );
+> 	this[ 'INTEGER.YANK' ] = new pushInstruction( this.intStack, pushInstructionYank );
+> 	this[ 'CODE.YANK' ] = new pushInstruction( this.codeStack, pushInstructionYank );
+> 	this[ 'EXEC.YANK' ] = new pushInstruction( this.execStack, pushInstructionYank );
+> 	this[ 'BOOLEAN.YANK' ] = new pushInstruction( this.boolStack, pushInstructionYank );
+> 	this[ 'NAME.YANK' ] = new pushInstruction( this.nameStack, pushInstructionYank );
+> 
+> 	this[ 'FLOAT.YANKDUP' ] = new pushInstruction( this.floatStack, pushInstructionYankDup );
+> 	this[ 'INTEGER.YANKDUP' ] = new pushInstruction( this.intStack, pushInstructionYankDup );
+> 	this[ 'CODE.YANKDUP' ] = new pushInstruction( this.codeStack, pushInstructionYankDup );
+> 	this[ 'EXEC.YANKDUP' ] = new pushInstruction( this.execStack, pushInstructionYankDup );
+> 	this[ 'BOOLEAN.YANKDUP' ] = new pushInstruction( this.boolStack, pushInstructionYankDup );
+> 	this[ 'NAME.YANKDUP' ] = new pushInstruction( this.nameStack, pushInstructionYankDup );
+> 
+> 	this[ 'FLOAT.SHOVE' ] = new pushInstruction( this.floatStack, pushInstructionShove );
+> 	this[ 'INTEGER.SHOVE' ] = new pushInstruction( this.intStack, pushInstructionShove );
+> 	this[ 'CODE.SHOVE' ] = new pushInstruction( this.codeStack, pushInstructionShove );
+> 	this[ 'EXEC.SHOVE' ] = new pushInstruction( this.execStack, pushInstructionShove );
+> 	this[ 'BOOLEAN.SHOVE' ] = new pushInstruction( this.boolStack, pushInstructionShove );
+> 	this[ 'NAME.SHOVE' ] = new pushInstruction( this.nameStack, pushInstructionShove );
+> 
+> 	this[ 'FLOAT.ROT' ] = new pushInstruction( this.floatStack, pushInstructionRot );
+> 	this[ 'INTEGER.ROT' ] = new pushInstruction( this.intStack, pushInstructionRot );
+> 	this[ 'CODE.ROT' ] = new pushInstruction( this.codeStack, pushInstructionRot );
+> 	this[ 'EXEC.ROT' ] = new pushInstruction( this.execStack, pushInstructionRot );
+> 	this[ 'BOOLEAN.ROT' ] = new pushInstruction( this.boolStack, pushInstructionRot );
+> 	this[ 'NAME.ROT' ] = new pushInstruction( this.nameStack, pushInstructionRot );
+> 
+> 	this[ 'FLOAT.STACKDEPTH' ] = new pushInstruction( this.floatStack, pushInstructionStackdepth );
+> 	this[ 'INTEGER.STACKDEPTH' ] = new pushInstruction( this.intStack, pushInstructionStackdepth );
+> 	this[ 'CODE.STACKDEPTH' ] = new pushInstruction( this.codeStack, pushInstructionStackdepth );
+> 	this[ 'EXEC.STACKDEPTH' ] = new pushInstruction( this.execStack, pushInstructionStackdepth );
+> 	this[ 'BOOLEAN.STACKDEPTH' ] = new pushInstruction( this.boolStack, pushInstructionStackdepth );
+> 	this[ 'NAME.STACKDEPTH' ] = new pushInstruction( this.nameStack, pushInstructionStackdepth );
+> 
+> 	this[ 'FLOAT.SWAP' ] = new pushInstruction( this.floatStack, pushInstructionSwap );
+> 	this[ 'INTEGER.SWAP' ] = new pushInstruction( this.intStack, pushInstructionSwap );
+> 	this[ 'CODE.SWAP' ] = new pushInstruction( this.codeStack, pushInstructionSwap );
+> 	this[ 'EXEC.SWAP' ] = new pushInstruction( this.execStack, pushInstructionSwap );
+> 	this[ 'BOOLEAN.SWAP' ] = new pushInstruction( this.boolStack, pushInstructionSwap );
+> 	this[ 'NAME.SWAP' ] = new pushInstruction( this.nameStack, pushInstructionSwap );
+> 
+> 	this[ 'FLOAT.FLUSH' ] = new pushInstruction( this.floatStack, pushInstructionFlush );
+> 	this[ 'INTEGER.FLUSH' ] = new pushInstruction( this.intStack, pushInstructionFlush );
+> 	this[ 'CODE.FLUSH' ] = new pushInstruction( this.codeStack, pushInstructionFlush );
+> 	this[ 'EXEC.FLUSH' ] = new pushInstruction( this.execStack, pushInstructionFlush );
+> 	this[ 'BOOLEAN.FLUSH' ] = new pushInstruction( this.boolStack, pushInstructionFlush );
+> 	this[ 'NAME.FLUSH' ] = new pushInstruction( this.nameStack, pushInstructionFlush );
+> 
+> 	this[ 'BOOLEAN.AND' ] = new pushInstruction( this.boolStack, pushInstructionAnd );
+> 	this[ 'BOOLEAN.OR' ] = new pushInstruction( this.boolStack, pushInstructionOr );
+> 	this[ 'BOOLEAN.NOT' ] = new pushInstruction( this.boolStack, pushInstructionNot );
+> 
+> 	this[ 'CODE.QUOTE' ] = new pushInstruction( this.codeStack, pushInstructionQuote );
+> 	this[ 'CODE.CAR' ] = new pushInstruction( this.codeStack, pushInstructionCar );
+> 	this[ 'CODE.CDR' ] = new pushInstruction( this.codeStack, pushInstructionCdr );
+> 	this[ 'CODE.CONTAINS' ] = new pushInstruction( this.codeStack, pushInstructionContains );
+> 	this[ 'CODE.NTH' ] = new pushInstruction( this.codeStack, pushInstructionNth );
+> 	this[ 'CODE.LIST' ] = new pushInstruction( this.codeStack, pushInstructionList );
+> 	this[ 'CODE.CONS' ] = new pushInstruction( this.codeStack, pushInstructionCons );
+> 	this[ 'CODE.DO' ] = new pushInstruction( this.codeStack, pushInstructionDo );
+> 	this[ 'CODE.DO*' ] = new pushInstruction( this.codeStack, pushInstructionDoStar );
+> 	this[ 'CODE.DO*RANGE' ] = new pushInstruction( this.codeStack, pushInstructionDoRange );
+> 	this[ 'CODE.DO*COUNT' ] = new pushInstruction( this.codeStack, pushInstructionDoCount );
+> 	this[ 'CODE.DO*TIMES' ] = new pushInstruction( this.codeStack, pushInstructionDoTimes );
+> 	this[ 'CODE.IF' ] = new pushInstruction( this.codeStack, pushInstructionIf );
+> 	this[ 'CODE.NULL' ] = new pushInstruction( this.codeStack, pushInstructionNull );
+> 	this[ 'CODE.ATOM' ] = new pushInstruction( this.codeStack, pushInstructionAtom );
+> 	this[ 'CODE.LENGTH' ] = new pushInstruction( this.codeStack, pushInstructionLength );
+> 	this[ 'CODE.NOOP' ] = new pushInstruction( this.codeStack, pushInstructionNoop );
+> 
+> 	this[ 'EXEC.DO*RANGE' ] = new pushInstruction( this.execStack, pushInstructionDoRange );
+> 	this[ 'EXEC.DO*TIMES' ] = new pushInstruction( this.execStack, pushInstructionDoTimes );
+> 	this[ 'EXEC.DO*COUNT' ] = new pushInstruction( this.execStack, pushInstructionDoCount );
+> 	this[ 'EXEC.IF' ] = new pushInstruction( this.execStack, pushInstructionIf );
+> 	this[ 'EXEC.S' ] = new pushInstruction( this.execStack, pushInstructionS );
+> 	this[ 'EXEC.K' ] = new pushInstruction( this.execStack, pushInstructionK );
+> 	this[ 'EXEC.Y' ] = new pushInstruction( this.execStack, pushInstructionY );
+> 
+> 	this[ 'BOOLEAN.RAND' ] = new pushInstruction( this.boolStack, pushInstructionRandomBool );
+> 	this[ 'INTEGER.RAND' ] = new pushInstruction( this.intStack, pushInstructionRandomNumber );
+> 	this[ 'FLOAT.RAND' ] = new pushInstruction( this.floatStack, pushInstructionRandomNumber );
+> 	this[ 'NAME.RAND' ] = new pushInstruction( this.nameStack, pushInstructionRandomName );
+> 
+> 	this[ 'TRUE' ] = new pushDefine( this.boolStack, true );
+> 	this[ 'FALSE' ] = new pushDefine( this.boolStack, false );
+> 
+> 	this[ 'INPUT' ] = float_input;
+> 
+> }
+> 
+887c882
+<   var atom;
+---
+> 	var atom;
+889c884
+<   inInterpreter._effort = 0;
+---
+> 	inInterpreter._effort = 0;
+891c886
+<   var test = new Array();
+---
+> 	var test = new Array();
+893,894c888,889
+<   inInterpreter.codeStack.push( inProgramArray );
+<   inInterpreter.execStack.push( inProgramArray );
+---
+> 	inInterpreter.codeStack.push( inProgramArray );
+> 	inInterpreter.execStack.push( inProgramArray );
+896,924c891,919
+<   while( inInterpreter.execStack.length > 0 ) {
+<     atom = inInterpreter.execStack.pop();
+< 
+<     if( isPushProgram( atom ) ) {
+<       while( atom.length > 0 ) inInterpreter.execStack.push( atom.pop() )
+<     } else if( isPushFloat( atom ) ) {
+<       inInterpreter.floatStack.push( atom._value );
+<     } else if( isPushInt( atom ) ) {
+<       inInterpreter.intStack.push( atom._value );
+<     } else {
+<       var func = inInterpreter[ atom ];
+< 
+<       if( func == null ) {
+<         inInterpreter.nameStack.push( atom );
+<       } else if( isPushInstruction( func ) || isPushDefine( func ) ) {
+<         func.call( inInterpreter );
+<       } else {
+<         func( inInterpreter );
+<       }
+<     }
+< 
+<     inInterpreter._effort++;
+< 
+<     if( inInterpreter._effort > 1000 ) {
+<       inInterpreter._errorMessage = "Hardcoded effort limit reached (1000 instructions)";
+<       inInterpreter._error = 1;
+<       return -1;
+<     }
+<   }
+---
+> 	while( inInterpreter.execStack.length > 0 ) {
+> 		atom = inInterpreter.execStack.pop();
+> 
+> 		if( isPushProgram( atom ) ) {
+> 			while( atom.length > 0 ) inInterpreter.execStack.push( atom.pop() )
+> 		} else if( isPushFloat( atom ) ) {
+> 			inInterpreter.floatStack.push( atom._value );
+> 		} else if( isPushInt( atom ) ) {
+> 			inInterpreter.intStack.push( atom._value );
+> 		} else {
+> 			var func = inInterpreter[ atom ];
+> 
+> 			if( func == null ) {
+> 				inInterpreter.nameStack.push( atom );
+> 			} else if( isPushInstruction( func ) || isPushDefine( func ) ) {
+> 				func.call( inInterpreter );
+> 			} else {
+> 				func( inInterpreter );
+> 			}
+> 		}
+> 
+> 		inInterpreter._effort++;
+> 
+> 		if( inInterpreter._effort > 1000 ) {
+> 			inInterpreter._errorMessage = "Hardcoded effort limit reached (1000 instructions)";
+> 			inInterpreter._error = 1;
+> 			return -1;
+> 		}
+> 	}
+926c921
+<   return 0;
+---
+> 	return 0;
+930c925
+<   inInterpreter[ 'inputValue' ] = inValue;
+---
+> 	inInterpreter[ 'inputValue' ] = inValue;
+934c929
+<   return inInterpreter.floatStack.push( inValue );
+---
+> 	return inInterpreter.floatStack.push( inValue );
+938c933
+<   return inInterpreter.intStack.push( inValue );
+---
+> 	return inInterpreter.intStack.push( inValue );
+941,943c936,939
+< /**
+<  * Parses a string into a Push program suitable for execution with an interpreter
+<  */
+---
+> //
+> // Parses a string into a Push program suitable for execution with an interpreter
+> // 
+> 
+945c941
+<   // insert spaces around all parens so that our split works
+---
+> 	// insert spaces around all parens so that our split works
+947c943
+<   var parens = /[\(\)]/;
+---
+> 	var parens = /[\(\)]/;
+949,951c945,947
+<   if( !parens.test( inString ) ) {
+<     inString = " ( " + inString + " ) ";
+<   }
+---
+> 	if( !parens.test( inString ) ) {
+> 		inString = " ( " + inString + " ) ";
+> 	}
+953,954c949,950
+<   inString = inString.replace( /([\(\)])/g, ' $1 ' );
+<   inString = inString.replace( /[\r\n]/g, ' ' );
+---
+> 	inString = inString.replace( /([\(\)])/g, ' $1 ' );
+> 	inString = inString.replace( /[\r\n]/g, ' ' );
+956c952
+<   var tokens = inString.split( ' ' );
+---
+> 	var tokens = inString.split( ' ' );
+958c954
+<   var listStack = new Array();
+---
+> 	var listStack = new Array();
+960,961c956,957
+<   var currentList = null;
+<   var lastList = null;
+---
+> 	var currentList = null;
+> 	var lastList = null;
+963,965c959,961
+<   var spaces = /\ +/;
+<   var decimal = /\./;
+<   var num = 0;
+---
+> 	var spaces = /\ +/;
+> 	var decimal = /\./;
+> 	var num = 0;
+967,968c963,964
+<   for( var i = 0; i < tokens.length; i++ ) {
+<     if( !spaces.test( tokens[ i ] ) ) {
+---
+> 	for( var i = 0; i < tokens.length; i++ ) {
+> 		if( !spaces.test( tokens[ i ] ) ) {
+970c966
+<       if( tokens[ i ] == '(' ) {        // Push 
+---
+> 			if( tokens[ i ] == '(' ) {				// Push 
+972,973c968,969
+<         listStack.push( new Array() );
+<         currentList = listStack[ listStack.length - 1 ];
+---
+> 				listStack.push( new Array() );
+> 				currentList = listStack[ listStack.length - 1 ];
+975,979c971,975
+<       } else if( tokens[ i ] == ')' ) {    // Pop
+<         if( listStack.length < 1 ) {
+<           // alert( "Unmatched ')' in Push program (token #" + i + ")" );
+<           return null;
+<         }
+---
+> 			} else if( tokens[ i ] == ')' ) {		// Pop
+> 				if( listStack.length < 1 ) {
+> 					// alert( "Unmatched ')' in Push program (token #" + i + ")" );
+> 					return null;
+> 				}
+981c977
+<         var newList = listStack.pop();
+---
+> 				var newList = listStack.pop();
+983c979
+<         lastList = newList;
+---
+> 				lastList = newList;
+985c981
+<         currentList = listStack[ listStack.length - 1 ];
+---
+> 				currentList = listStack[ listStack.length - 1 ];
+987,988c983,984
+<         if( currentList != null ) 
+<           currentList.push( newList );
+---
+> 				if( currentList != null ) 
+> 					currentList.push( newList );
+990,994c986,990
+<       } else if ( ( num = parseFloat( tokens[ i ] ) ) == tokens[ i ] ) {  // Number literal
+<         if( currentList == null ) {
+<           // alert( 'Push parse error near token "' + tokens[ i ] + '"' );
+<           return null;
+<         }
+---
+> 			} else if ( ( num = parseFloat( tokens[ i ] ) ) == tokens[ i ] ) {  // Number literal
+> 				if( currentList == null ) {
+> 					// alert( 'Push parse error near token "' + tokens[ i ] + '"' );
+> 					return null;
+> 				}
+996,1004c992,1000
+<         if( decimal.test( tokens[ i ] ) )
+<           currentList.push( new pushFloat( num ) );
+<         else 
+<           currentList.push( new pushInt( num ) );
+<       } else if( tokens[ i ] != '' ) {    // Instruction token
+<         if( currentList == null ) {
+<           // alert( 'Push parse error near token "' + tokens[ i ] + '"' );
+<           return null;
+<         }
+---
+> 				if( decimal.test( tokens[ i ] ) )
+> 					currentList.push( new pushFloat( num ) );
+> 				else 
+> 					currentList.push( new pushInt( num ) );
+> 			} else if( tokens[ i ] != '' ) {		// Instruction token
+> 				if( currentList == null ) {
+> 					// alert( 'Push parse error near token "' + tokens[ i ] + '"' );
+> 					return null;
+> 				}
+1006,1009c1002,1005
+<         currentList.push( tokens[ i ] );
+<       }
+<     }
+<   }
+---
+> 				currentList.push( tokens[ i ] );
+> 			}
+> 		}
+> 	}
+1011,1014c1007,1010
+<   if( listStack.length > 0 ) {
+<     // alert( "Unmatched '(' in Push program" );
+<     return null;
+<   }
+---
+> 	if( listStack.length > 0 ) {
+> 		// alert( "Unmatched '(' in Push program" );
+> 		return null;
+> 	}
+1016c1012
+<   return lastList;
+---
+> 	return lastList;
+1019,1026c1015,1021
+< /** 
+<  * Parses a string into a program and executes the program with a new interpreter
+<  *
+<  * @return The string state of the interpreter
+<  */
+< function pushRunString( inProgram ) {
+<   var program = pushParseString( inProgram );
+<   var interpreter = new pushInterpreter();
+---
+> //
+> // Parses a string into a program and executes the program with a new interpreter
+> //
+> 
+> function pushRunString( inValue ) {
+> 	var program = pushParseString( inValue );
+> 	var interpreter = new pushInterpreter();
+1028c1023
+<   var info = pushRunProgram( interpreter, program )
+---
+> 	var info = pushRunProgram( interpreter, program )
+1030c1025
+<   return interpreter.toString();
+---
+> 	return interpreter.toString();

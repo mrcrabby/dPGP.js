@@ -1,0 +1,44 @@
+<html>
+<head>
+	<script type="text/javascript" src="push.js"></script>
+	<script type="text/javascript" src="jquery-1.3.2.min.js"></script>
+	<script type="text/javascript" src="pushgp.js"></script>
+	<script type="text/javascript" src="trygp.js"></script>
+	<script type="text/javascript" src="gp_controller.js"></script>
+</head>
+<body>
+	<script>
+	$(document).ready (
+		function()
+		{
+			// testGP();
+			start();
+		});
+	</script>
+	<h1>Try Genetic Programming</h1>
+	
+	<div id="regressionTable">
+		<div style="margin: 0 auto">
+		<div id="testChart" style="float:left">
+			<!-- <div id="pos"></div> -->
+		</div>
+		<div style="float:right; width:30%">
+			<textarea id="fitnessCases" rows=30 cols=30></textarea>
+			<div><h3><p id="statusText"></p></h3></div>
+		</div>
+		</div>
+		<div style="clear:both; padding:15px">
+			<input type="submit" value="Run PushGP" id="runGP">
+			<input type="submit" value="Do Another Generation" id="iterateGP">
+		</div>
+	</div>
+	
+	<div style="padding:30px">
+		<div>
+			<strong>GP Results</strong>   <a href="#" id="showLink">show</a><a href="#" id="hideLink">hide</a>
+		</div>
+		<div id="gpResults">
+		</div>
+	</div>
+</body>
+</html>
