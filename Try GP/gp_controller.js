@@ -1,6 +1,6 @@
 //FIXME: push.js seems to have bug on INTEGER.FROMBOOLEAN
 
-var pushScriptFuncs = [/*"FLOAT.+","FLOAT.-","FLOAT./","FLOAT.*","FLOAT.%","FLOAT.>","FLOAT.<","FLOAT.=","FLOAT.COS","FLOAT.DEFINE","FLOAT.DUP","FLOAT.FLUSH" *//*,"FLOAT.FROMBOOLEAN"*//*,"FLOAT.FROMINTEGER","FLOAT.MAX","FLOAT.MIN","FLOAT.POP","FLOAT.RAND","FLOAT.ROT","FLOAT.SHOVE","FLOAT.SIN","FLOAT.STACKDEPTH","FLOAT.SWAP","FLOAT.TAN","FLOAT.YANK","FLOAT.YANKDUP",*/"INTEGER.+","INTEGER.-","INTEGER./","INTEGER.*","INTEGER.%","INTEGER.>","INTEGER.<","INTEGER.=","INTEGER.DEFINE","INTEGER.DUP","INTEGER.FLUSH",/*,"INTEGER.FROMBOOLEAN",*/"INTEGER.FROMFLOAT","INTEGER.MAX","INTEGER.MIN","INTEGER.POP","INTEGER.RAND","INTEGER.ROT","INTEGER.SHOVE","INTEGER.STACKDEPTH","INTEGER.SWAP","INTEGER.YANK","INTEGER.YANKDUP"
+var pushScriptFuncs = [/*"FLOAT.+","FLOAT.-","FLOAT./","FLOAT.*","FLOAT.%","FLOAT.>","FLOAT.<","FLOAT.=","FLOAT.COS","FLOAT.DEFINE","FLOAT.DUP","FLOAT.FLUSH" *//*,"FLOAT.FROMBOOLEAN"*//*,"FLOAT.FROMINTEGER","FLOAT.MAX","FLOAT.MIN","FLOAT.POP","FLOAT.RAND","FLOAT.ROT","FLOAT.SHOVE","FLOAT.SIN","FLOAT.STACKDEPTH","FLOAT.SWAP","FLOAT.TAN","FLOAT.YANK","FLOAT.YANKDUP",*/"INTEGER.+","INTEGER.-","INTEGER./","INTEGER.*","INTEGER.%","INTEGER.>","INTEGER.<","INTEGER.=",/*"INTEGER.DEFINE"*/"INTEGER.DUP","INTEGER.FLUSH",/*,"INTEGER.FROMBOOLEAN",*/"INTEGER.FROMFLOAT","INTEGER.MAX","INTEGER.MIN","INTEGER.POP",/*"INTEGER.RAND",*/"INTEGER.ROT","INTEGER.SHOVE","INTEGER.STACKDEPTH","INTEGER.SWAP","INTEGER.YANK","INTEGER.YANKDUP"
 
 /*,"BOOLEAN.=","BOOLEAN.AND","BOOLEAN.DEFINE","BOOLEAN.DUP","BOOLEAN.FLUSH","BOOLEAN.FROMFLOAT","BOOLEAN.FROMINTEGER","BOOLEAN.NOT","BOOLEAN.OR","BOOLEAN.POP","BOOLEAN.RAND","BOOLEAN.ROT","BOOLEAN.SHOVE","BOOLEAN.STACKDEPTH","BOOLEAN.SWAP","BOOLEAN.YANK","BOOLEAN.YANKDUP","CODE.=","CODE.ATOM","CODE.CAR","CODE.CDR","CODE.CONS","CODE.CONTAINS","CODE.DEFINE","CODE.DO","CODE.DO*","CODE.DO*COUNT","CODE.DO*RANGE","CODE.DO*TIMES","CODE.DUP","CODE.FLUSH","CODE.IF","CODE.LENGTH","CODE.LIST","CODE.NOOP","CODE.NTH","CODE.NULL","CODE.SHOVE","CODE.POP","CODE.QUOTE","CODE.ROT","CODE.SHOVE","CODE.STACKDEPTH","CODE.SWAP","CODE.YANK","CODE.YANKDUP","EXEC.=","EXEC.DEFINE","EXEC.DO*COUNT","EXEC.DO*RANGE","EXEC.DO*TIMES","EXEC.DUP","EXEC.FLUSH","EXEC.IF","EXEC.K","EXEC.POP","EXEC.ROT","EXEC.S","EXEC.SHOVE","EXEC.STACKDEPTH","EXEC.SWAP","EXEC.Y","EXEC.YANK","EXEC.YANKDUP"/*,"NAME.=","NAME.DUP","NAME.FLUSH","NAME.POP","NAME.RAND","NAME.ROT","NAME.SHOVE","NAME.STACKDEPTH","NAME.SWAP","NAME.YANK","NAME.YANKDUP"*/];
 
@@ -8,11 +8,18 @@ function testGP() {
     startGP(function(){});
 }
 
+function runPushProgramArray(programArray) {
+	var interpreter = new pushInterpreter(); // Might be too expensive, look into flushing the stack
+
+	var info = pushRunProgram( interpreter, programArray );
+	return interpreter;
+}
+
 function runPush(program_str) {
     var program = pushParseString(program_str);
-	var interpreter = new pushInterpreter();
+	var interpreter = new pushInterpreter(); // Might be too expensive, look into flushing the stack
 
-	var info = pushRunProgram( interpreter, pushParseString(program_str) );
+	var info = pushRunProgram( interpreter, program );
 	return interpreter;
 
 }
@@ -37,18 +44,39 @@ function doFitness(code,fitness_func) {
 //     doGeneration(programs,fitness_func);
 // }
 
-function doGeneration(programs,fitness_func) {
+// function doGeneration(programs,fitness_func) {
+// 
+//     //Run programs
+//     for (var x = 0; x < programs.length; x++)
+//         programs[x].fitness = doFitness(programs[x].code,fitness_func);
+//         
+//     //Sort functions by fitness
+//     programs.sort(function(programA,programB) {
+//        return programA['fitness'] - programB['fitness'];
+//     });
+// 
+//     // console.log("Best program: " + programs[0].['code'] + " \n fitness = " + programs[0]['fitness']);
+// }
 
-    //Run programs
-    for (var x = 0; x < programs.length; x++)
-        programs[x].fitness = doFitness(programs[x].code,fitness_func);
+function doFitness(testCases,code) {
+        var fitness = 0;
+    
+      for (var x = 0; x < testCases.length; x++) {
+            
+            var sub_code = code.replace (/x/g,parseFloat(testCases[x][0]));
+
+            var result = runPush(sub_code);
+            
+            //highly penalize programs that don't do anything with int stack, or just return this.testCases[0]
+            var popOffStack = result.intStack.pop();
+            
+            console.log (" x =  " + testCases[x][0] + " y = " + testCases[x][1] + " program result = " + popOffStack);
+            console.log(sub_code);
+            
+            fitness += isNaN(popOffStack) || popOffStack == testCases[x]  ? 9999  : Math.abs(testCases[x][1] - popOffStack) ;
+        }
         
-    //Sort functions by fitness
-    programs.sort(function(programA,programB) {
-       return programA['fitness'] - programB['fitness'];
-    });
-
-    // console.log("Best program: " + programs[0].['code'] + " \n fitness = " + programs[0]['fitness']);
+        return fitness;
 }
 
 function randomCode(depth,max_depth) {
@@ -84,7 +112,9 @@ function randomCode(depth,max_depth) {
 
     code_string += ")";
     
-    if (code_string == undefined) alert('code_string is undefined!');
+    if (code_string.indexOf("undefined") != -1) workerDebug("whoops! " + x);
+    
+    if (code_string == undefined) workerDebug('code_string is undefined!');
     
     return code_string;
 }

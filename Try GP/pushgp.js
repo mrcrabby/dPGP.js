@@ -1,12 +1,16 @@
 PushGP = function () {
     this.pushPrograms = [];
+    
+    this.newPushPrograms = [];
     this.testCases = [[0,0]];
     this.fitnessFunc = function(a) { return 0; };
     
     this.params = {
-        'crossoverPercentile' : 10,
-        'mutationProbability' : 2,
-        'population' : 20
+        'crossoverPercentile' : 20,
+        'mutationProbability' : 25,
+        'startPopulation' : 20,
+        'tournamentSize' : 10,
+        'maxPopulation' : 25
     };
     
     this.generations = 0;
@@ -20,40 +24,52 @@ PushGP.prototype.startGP = function (testCases,fitnessFunc,params) {
     
     updateStatus("Generating random programs.");
     
-    for (var x = 0; x < this.params['population']; x++) {
+    for (var x = 0; x < this.params['startPopulation']; x++) {
         this.pushPrograms[x] = {code: randomCode(), fitness: 0};
     }
+    
+    // for (var caseX = 0; caseX < this.testCases.length; caseX++)
+    //     workerDebug( this.testCases[caseX][0] + " " + this.testCases[caseX][1]);
+        // workerDebug (caseX + " " + (2*(caseX+1)));
+
+    // if (this.generations == 0)
+        // this.pushPrograms[0].code = "( 1337 x 1 INTEGER.+ 2 INTEGER.* )";
 
 };
 
-PushGP.prototype.doGeneration = function() {
-    if (this.generations > 0)
-        this.crossoverAndMutate();
+PushGP.prototype.doGeneration = function() {    
+    
+    this.pushPrograms = this.pushPrograms.concat(this.newPushPrograms);
+    this.newPushPrograms = [];
     
     for (var programX in this.pushPrograms) {
         updateStatus("Evaluating fitness of program #" + programX + ".");
         
         var code = this.pushPrograms[programX];
-        
+                
         if (code.code == undefined)
             continue; //FIXME: why does this happen?
+            
+        if (typeof (code.code) == "number") {
+            this.pushPrograms[programX]['fitness'] = 999999; //Strongly penalize "programs" that are just a number
+            continue;
+        }
         
         var fitness = 0;
                 
         for (var x = 0; x < this.testCases.length; x++) {
-            var sub_code = code.code.replace (/ x /g," " + parseFloat(this.testCases[x][0]) + " ");
             
-            // console.log("Program? " + sub_code);
+            var sub_code = code.code.replace (/x/g, /*" " + */parseFloat(this.testCases[x][0])/* + " "*/);
 
             var result = runPush(sub_code);
-            
-            // console.log(result);
             
             //highly penalize programs that don't do anything with int stack, or just return this.testCases[0]
             var popOffStack = result.intStack.pop();
             
-            fitness += isNaN(popOffStack) || popOffStack == this.testCases[0]  ? 9999  : Math.abs(this.testCases[x][1] - popOffStack) ;
+            fitness += isNaN(popOffStack) /*|| popOffStack == this.testCases[x][0]*/  ? 9999  : Math.abs(this.testCases[x][1] - popOffStack) ;
         }
+        
+        // if (fitness == 0) fitness = -1 * (1000 - pushParseString(code.code));
         
         this.pushPrograms[programX]['fitness'] = fitness;
         
@@ -68,61 +84,82 @@ PushGP.prototype.doGeneration = function() {
        return programA['fitness'] - programB['fitness'];
     });
     
-    alert("Best program = " + this.pushPrograms[0].code + " fitness = " + this.pushPrograms[0].fitness);
+    alert("Best program = " + this.pushPrograms[0].code + " fitness = " + this.pushPrograms[0].fitness + " out of " + this.pushPrograms.length);
     
     this.generations++;
+    
+    // if (this.generations > 0)
+        this.crossoverAndMutate();
+        
+    if (this.pushPrograms.length > this.params.maxPopulation) {
+        //Cull the most unfit            
+        this.pushPrograms.splice(this.params.maxPopulation, this.pushPrograms.length - this.params.maxPopulation);
+    }
     
     updateStatus("Do another generation?");
 };
 
+PushGP.prototype.tournamentSelect = function() {
+    var tSize = Math.min(this.params.tournamentSize,this.pushPrograms.length);
+    var best = null;
+    for(var i = 0;i < tSize; i++){
+        var rand = parseInt(Math.random() * this.pushPrograms.length);
+        if (best == null || this.pushPrograms[rand].fitness < best.fitness)
+            best = this.pushPrograms[rand];
+    }
+    return best;
+};
+
+//Pass in a program *array*
+PushGP.prototype.doCrossover = function(program1Array) {
+    var crossoverPartner = this.tournamentSelect(); //parseInt(Math.random() * this.pushPrograms.length/100.0*this.params['crossoverPercentile']);
+    var crossoverPartnerArray = pushParseString(crossoverPartner['code']);
+    
+    // var copyOfOld = pushParseString(crossoverPartner['code']);
+
+    var codePoints = countPoints(program1Array);// program1);
+    
+    var randomComponent = getRandomComponent(program1Array,codePoints);    
+
+    return insertCodeAtPoint(crossoverPartnerArray, randomComponent,parseInt(Math.random() * countPoints(crossoverPartnerArray)));
+};
+
 PushGP.prototype.crossoverAndMutate = function() {
     updateStatus("Doing crossover.");
-    
-    var crossoverEndIdx = this.pushPrograms.length/100.0*this.params['crossoverPercentile'];
         
-     //First, crossover
-     for (var programX = 0; programX < /*crossoverEndIdx*/1; programX++) {
+    var crossoverEndIdx = parseInt(this.pushPrograms.length*this.params['crossoverPercentile']/100.0);
+        
+     // //First, crossover
+     for (var programX = 0; programX < crossoverEndIdx; programX++) {
          var programArray = pushParseString(this.pushPrograms[programX]['code']);
-         
-         var crossoverPartnerIdx = parseInt(Math.random() * this.pushPrograms.length/100.0*this.params['crossoverPercentile']);
-         var crossoverPartnerArray = pushParseString(this.pushPrograms[crossoverPartnerIdx]['code']);
-         
-         var codePoints = countPoints(programArray);
-         var partnerCodePoints = countPoints(crossoverPartnerArray);
-         
-         var randomComponent = getRandomComponent(programArray,codePoints);
-         var randomComponent2 = getRandomComponent(crossoverPartnerArray,partnerCodePoints);
-         
-         insertCodeAtPoint(programArray,randomComponent2,parseInt(Math.random()*codePoints));
-         insertCodeAtPoint(crossoverPartnerArray,randomComponent,parseInt(Math.random()*partnerCodePoints));
      
-         // if (programArray.toString().indexOf("object") != -1 && this.pushPrograms[programX]['code'].indexOf("object") == -1)
-         // {
-         //     console.log("this is it!\n" + this.pushPrograms[programX]['code']);
-         //                  console.log("this is evidence\n" + programArray.toString());
-         //                  
-         //                  console.log("parner \n" + this.pushPrograms[crossoverPartnerIdx]['code']);
-         //                                            console.log("parner array \n" + crossoverPartnerArray.toString());
-         // }else {
-         //      
-         this.pushPrograms[programX]['code'] = programArray.toString();
-         this.pushPrograms[crossoverPartnerIdx]['code'] = crossoverPartnerArray.toString();
+         var newProgramArray = this.doCrossover(programArray);
+     
+         this.newPushPrograms.push({'code' : newProgramArray.toString(), 'fitness' : 0});
  
          // console.log(programArray.toString());
      }
-     
-     return;
-     
+        
      updateStatus("Doing mutation.");
-    //And mutate the rest
-    for (var programX = crossoverEndIdx + 1; programX < this.pushPrograms.length; programX++) {
+
+    //And mutate the rest     
+     var currentLength = this.pushPrograms.length;
+    for (var programX = crossoverEndIdx; programX < currentLength; programX++) {
         if (parseInt(Math.random() * 100) <= this.params['mutationProbability']) {
-            var programArray = pushParseString(this.pushPrograms[programX]);
+            var programArray = pushParseString(this.pushPrograms[programX]['code']);
+
             var codePoints = countPoints(programArray);
          
-            insertCodeAtPoint(programArray,randomCode(1,1),parseInt(Math.random()*codePoints));
+            // workerDebug("!" + programArray.toString());
             
-            this.pushPrograms[programX]['code'] = programArray.toString();
+            // workerDebug("Before : " + programArray.toString());
+            insertCodeAtPoint(programArray,randomCode(1,1),parseInt(Math.random()*codePoints));
+
+            // workerDebug("mutated to " + programArray.toString());
+            
+            this.newPushPrograms.push({'code' : programArray.toString(), 'fitness' : 0});
+            // alert(programArray.toString());
+
         }
     }
 }
@@ -225,6 +262,8 @@ function codeAtPointR(programArray,index) {
       
       idx++;
   }
+  
+  return programArray;
   
  }
     //  console.log("index = " + index + " newP = " + newProgram);

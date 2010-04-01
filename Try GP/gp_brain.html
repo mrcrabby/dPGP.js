@@ -1,0 +1,82 @@
+<html>
+<head>
+	<script type="text/javascript" src="jsworker.js"></script>
+	<!-- // <script type="text/javascript" src="gp_worker.js"></script> -->
+	
+	<!-- just a test -->
+		<script type="text/javascript" src="fib.js"></script>
+	
+	<script type="text/javascript" src="push.js"></script>
+	<script type="text/javascript" src="jquery-1.3.2.min.js"></script>
+	<script type="text/javascript" src="pushgp.js"></script>
+	<!-- // <script type="text/javascript" src="trygp.js"></script> -->
+	<script type="text/javascript" src="gp_controller.js"></script>
+</head>
+<body>
+	<script>
+	
+	var haveStarted = false;
+	var generations = 0;
+	
+	$(document).ready (
+		function()
+		{
+			// testGP();
+			// start();
+			
+			function onMessage (a) {
+				// alert("Done!");
+				
+				if (a.data['msgtype'] == 'debug') {
+					console.log(a.data.msg);
+					return;
+				}		
+				
+				generations++;
+				
+				$('#numGenerations').html(generations);
+				
+				dumpGPData(a.data);
+			}
+			
+			$('#startButton').click(function() {
+				// var worker = JsWorker.createWorkerFromUrl("gp_worker.js", onMessage);
+				
+				var worker = new Worker("gp_worker.js");
+				
+				worker.onmessage = onMessage;
+				worker.onerror = function (err) {alert ('Error! ' + err);};
+				
+
+				worker.postMessage(100000);
+				// worker.postMessage("start");
+				
+				haveStarted = true;
+				
+							// stop();
+			});
+			
+
+		});
+		
+		function dumpGPData(pushGPStr) {
+			$('#programDump').html(pushGPStr);
+		}
+	</script>
+	<h1>GP Brain</h1>
+	
+	<div>
+		<input type="submit" value="start" id="startButton">		<input type="submit" value="stop" id="stopButton">
+		<div>
+			<span id="numGenerations">0</span> generations.
+		</div>
+		
+		<div style="padding:10px;">
+			<input type="submit" value="dump gp data">
+			<div id="programDump">
+			</div>
+		</div>
+	</div>
+
+</body>
+</html>
