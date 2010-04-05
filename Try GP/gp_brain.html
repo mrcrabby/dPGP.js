@@ -1,74 +1,36 @@
 <html>
 <head>
-	<script type="text/javascript" src="jsworker.js"></script>
 	<!-- // <script type="text/javascript" src="gp_worker.js"></script> -->
 	
 	<!-- just a test -->
 		<script type="text/javascript" src="fib.js"></script>
 	
-	<script type="text/javascript" src="push.js"></script>
-	<script type="text/javascript" src="jquery-1.3.2.min.js"></script>
-	<script type="text/javascript" src="pushgp.js"></script>
+	<script  src="push.js"></script>
+	<script  src="jquery-1.3.2.min.js"></script>
+	<script  src="pushgp.js"></script>
 	<!-- // <script type="text/javascript" src="trygp.js"></script> -->
-	<script type="text/javascript" src="gp_controller.js"></script>
-</head>
-<body>
-	<script>
+	<script src="gp_controller.js"></script>
+	<script src="gp_brain.js"></script>
 	
-	var haveStarted = false;
-	var generations = 0;
+	<script>
 	
 	$(document).ready (
 		function()
 		{
-			// testGP();
-			// start();
-			
-			function onMessage (a) {
-				// alert("Done!");
-				
-				if (a.data['msgtype'] == 'debug') {
-					console.log(a.data.msg);
-					return;
-				}		
-				
-				generations++;
-				
-				$('#numGenerations').html(generations);
-				
-				dumpGPData(a.data);
-			}
-			
-			$('#startButton').click(function() {
-				// var worker = JsWorker.createWorkerFromUrl("gp_worker.js", onMessage);
-				
-				var worker = new Worker("gp_worker.js");
-				
-				worker.onmessage = onMessage;
-				worker.onerror = function (err) {alert ('Error! ' + err);};
-				
-
-				worker.postMessage(100000);
-				// worker.postMessage("start");
-				
-				haveStarted = true;
-				
-							// stop();
-			});
-			
+			startGPBrain();
 
 		});
-		
-		function dumpGPData(pushGPStr) {
-			$('#programDump').html(pushGPStr);
-		}
+
 	</script>
+</head>
+<body>
+
 	<h1>GP Brain</h1>
 	
 	<div>
 		<input type="submit" value="start" id="startButton">		<input type="submit" value="stop" id="stopButton">
 		<div>
-			<span id="numGenerations">0</span> generations.
+			<span id="numGenerations">0</span> generations. <span id="doneMsg"></span>
 		</div>
 		
 		<div style="padding:10px;">

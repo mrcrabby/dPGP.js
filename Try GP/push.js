@@ -708,6 +708,11 @@ function pushInterpreter( ) {
     return this.boolStack[ this.boolStack.length - 1 ];
   }
 
+
+/*
+
+ Is this a bug? -psawaya
+*/
   this.nameStackTop = function() {
     return this.boolStack[ this.nameStack.length - 1 ];
   }

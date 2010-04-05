@@ -1,9 +1,15 @@
+/* TODO: make sure that this.pushPrograms is really being spliced after each generation.
+*/
+
+
 PushGP = function () {
     this.pushPrograms = [];
     
     this.newPushPrograms = [];
     this.testCases = [[0,0]];
     this.fitnessFunc = function(a) { return 0; };
+
+	this.currentBestFitness = undefined;
     
     this.params = {
         'crossoverPercentile' : 20,
@@ -13,6 +19,8 @@ PushGP = function () {
         'maxPopulation' : 25
     };
     
+	this.favorSmaller = true;
+	
     this.generations = 0;
 };
 
@@ -25,7 +33,8 @@ PushGP.prototype.startGP = function (testCases,fitnessFunc,params) {
     updateStatus("Generating random programs.");
     
     for (var x = 0; x < this.params['startPopulation']; x++) {
-        this.pushPrograms[x] = {code: randomCode(), fitness: 0};
+		var randomProgram = randomCode();
+        this.pushPrograms[x] = {code: randomProgram, fitness: 0, programArray : pushParseString(randomProgram)};
     }
     
     // for (var caseX = 0; caseX < this.testCases.length; caseX++)
@@ -59,7 +68,10 @@ PushGP.prototype.doGeneration = function() {
                 
         for (var x = 0; x < this.testCases.length; x++) {
             
-            var sub_code = code.code.replace (/x/g, /*" " + */parseFloat(this.testCases[x][0])/* + " "*/);
+            // var sub_code = code.code.replace (/x/g, /*" " + */parseFloat(this.testCases[x][0])/* + " "*/);
+
+			//Uses name stack
+			var sub_code = " ( (" + this.testCases[x][0] + " x INTEGER.DEFINE) " + code.code + " ) "; 
 
             var result = runPush(sub_code);
             
@@ -69,7 +81,7 @@ PushGP.prototype.doGeneration = function() {
             fitness += isNaN(popOffStack) /*|| popOffStack == this.testCases[x][0]*/  ? 9999  : Math.abs(this.testCases[x][1] - popOffStack) ;
         }
         
-        // if (fitness == 0) fitness = -1 * (1000 - pushParseString(code.code));
+        if (this.favorSmaller && fitness == 0) fitness = -1 * (1000 - countPoints(pushParseString(code.code)));
         
         this.pushPrograms[programX]['fitness'] = fitness;
         
@@ -83,8 +95,11 @@ PushGP.prototype.doGeneration = function() {
     this.pushPrograms.sort(function(programA,programB) {
        return programA['fitness'] - programB['fitness'];
     });
+
+	this.currentBestFitness = this.pushPrograms[0]['fitness'];
+	// workerDebug(this.pushPrograms[0]['fitness']);
     
-    alert("Best program = " + this.pushPrograms[0].code + " fitness = " + this.pushPrograms[0].fitness + " out of " + this.pushPrograms.length);
+    // alert("Best program = " + this.pushPrograms[0].code + " fitness = " + this.pushPrograms[0].fitness + " out of " + this.pushPrograms.length);
     
     this.generations++;
     
@@ -95,6 +110,17 @@ PushGP.prototype.doGeneration = function() {
         //Cull the most unfit            
         this.pushPrograms.splice(this.params.maxPopulation, this.pushPrograms.length - this.params.maxPopulation);
     }
+
+	//Pregenerate programArray for the most fit
+	//This is experimental - I think this will be faster
+	
+	// for (var programX in this.pushPrograms) {
+	// 	if (this.pushPrograms[programX]['programArray'] == undefined)
+	// 		this.pushPrograms[programX]['programArray'] = pushParseString(this.pushPrograms[programX]['code']);
+	// }
+	
+	// This also might not work, if crossover or mutation functions modify what's passed in!
+		
     
     updateStatus("Do another generation?");
 };
@@ -125,13 +151,40 @@ PushGP.prototype.doCrossover = function(program1Array) {
 };
 
 PushGP.prototype.crossoverAndMutate = function() {
+	
+	for (var programX = 0; programX < this.pushPrograms.length; programX++) {
+		//Offspring is a mutant
+		if ( parseInt(Math.random() * 100) < this.params['mutationProbability']) {
+			var programArray = pushParseString(this.pushPrograms[programX]['code']);
+			// var programArray = this.pushPrograms[programX]['programArray'] == undefined ? pushParseString(this.pushPrograms[programX]['code']) : this.pushPrograms[programX]['programArray'];
+
+            var codePoints = countPoints(programArray);
+
+            insertCodeAtPoint(programArray,randomCode(1,1),parseInt(Math.random()*codePoints));
+            
+            this.newPushPrograms.push({'code' : programArray.toString(), 'fitness' : 0});
+		}
+		else //Or result of crossover
+		{
+			var programArray = pushParseString(this.pushPrograms[programX]['code']);
+			// var programArray = this.pushPrograms[programX]['programArray'] == undefined ? pushParseString(this.pushPrograms[programX]['code']) : this.pushPrograms[programX]['programArray'];
+
+			var newProgramArray = this.doCrossover(programArray);
+
+			this.newPushPrograms.push({'code' : newProgramArray.toString(), 'fitness' : 0});
+		}
+	}
+}
+
+PushGP.prototype.crossoverAndMutate2 = function() {
     updateStatus("Doing crossover.");
         
     var crossoverEndIdx = parseInt(this.pushPrograms.length*this.params['crossoverPercentile']/100.0);
         
      // //First, crossover
      for (var programX = 0; programX < crossoverEndIdx; programX++) {
-         var programArray = pushParseString(this.pushPrograms[programX]['code']);
+         var programArray = this.pushPrograms[programX]['programArray'] == undefined ? pushParseString(this.pushPrograms[programX]['code']) : this.pushPrograms[programX]['programArray'];
+            // var programArray = pushParseString(this.pushPrograms[programX]['code']);
      
          var newProgramArray = this.doCrossover(programArray);
      
@@ -147,6 +200,7 @@ PushGP.prototype.crossoverAndMutate = function() {
     for (var programX = crossoverEndIdx; programX < currentLength; programX++) {
         if (parseInt(Math.random() * 100) <= this.params['mutationProbability']) {
             var programArray = pushParseString(this.pushPrograms[programX]['code']);
+			// var programArray = this.pushPrograms[programX]['programArray'] == undefined ? pushParseString(this.pushPrograms[programX]['code']) : this.pushPrograms[programX]['programArray'];
 
             var codePoints = countPoints(programArray);
          
