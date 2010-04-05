@@ -17,6 +17,7 @@
 	$(document).ready (
 		function()
 		{
+			$('#gpChart').hide();
 			startGPBrain();
 
 		});
@@ -28,13 +29,15 @@
 	<h1>GP Brain</h1>
 	
 	<div>
-		<input type="submit" value="start" id="startButton">		<input type="submit" value="stop" id="stopButton">
+		<input type="submit" value="start" id="startButton">		<!-- <input type="submit" value="stop" id="stopButton"> -->
 		<div>
 			<span id="numGenerations">0</span> generations. <span id="doneMsg"></span>
 		</div>
 		
+		<div><img id="gpChart" /></div>
+		
 		<div style="padding:10px;">
-			<input type="submit" value="dump gp data">
+			<!-- <input type="submit" value="dump gp data"> -->
 			<div id="programDump">
 			</div>
 		</div>
