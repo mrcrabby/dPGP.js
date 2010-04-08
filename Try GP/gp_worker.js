@@ -16,8 +16,11 @@ GPWorker.prototype.startGPWorker = function(numGens) {
     var rawData = [ 2,4,6,8,10,12,14,16,18,20];
     
     for (var caseX = -10; caseX < 10; caseX++) {
-        cases.push([caseX,/*rawData[caseX]*/ /*Math.pow(caseX,2) + 5*caseX*/ (2*(caseX+1))+2]);
+        cases.push([caseX,/*rawData[caseX]*/ /*Math.pow(caseX,2) + 5*caseX*/ (2*(caseX))]);
     }
+    
+    // cases =  //fibonacci sequence
+    //  [ [0,0], [1,1], [2,1], [3,2], [4,3], [5,5], [6,8], [7,13], [8,21]  ];
     
     workerDebug(cases);
     

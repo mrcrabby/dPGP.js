@@ -12,12 +12,12 @@ PushGP = function () {
 	this.currentBestFitness = undefined;
     
     this.params = {
-        'crossoverPercentile' : 20,
+        'crossoverPercentile' : 2,
         'mutationProbability' : 25,
 		'cloneProbability' : 10,
         'startPopulation' : 20,
         'tournamentSize' : 10,
-        'maxPopulation' : 25
+        'maxPopulation' : 75
     };
     
 	this.favorSmaller = true;
@@ -47,69 +47,35 @@ PushGP.prototype.startGP = function (testCases,fitnessFunc,params) {
 
 };
 
-PushGP.prototype.doGeneration = function() {    
-    this.pushPrograms = this.pushPrograms.concat(this.newPushPrograms);
-    this.newPushPrograms = [];
+PushGP.prototype.doGeneration = function() {
+    // for (var programX in this.pushPrograms) {
+    //     //...
+    // }
     
-    for (var programX in this.pushPrograms) {
-        updateStatus("Evaluating fitness of program #" + programX + ".");
-        
-        var code = this.pushPrograms[programX];
-                
-        if (code.code == undefined)
-            continue; //FIXME: why does this happen?
-            
-        if (typeof (code.code) == "number") {
-            this.pushPrograms[programX]['fitness'] = 999999; //Strongly penalize "programs" that are just a number
-            continue;
-        }
-        
-        var fitness = 0;
-                
-        for (var x = 0; x < this.testCases.length; x++) {
-            
-            // var sub_code = code.code.replace (/x/g, /*" " + */parseFloat(this.testCases[x][0])/* + " "*/);
-
-			//Uses name stack
-			var sub_code = " ( (" + this.testCases[x][0] + " x INTEGER.DEFINE) " + code.code + " ) "; 
-
-            var result = runPush(sub_code);
-            
-            //highly penalize programs that don't do anything with int stack, or just return this.testCases[0]
-            var popOffStack = result.intStack.pop();
-            
-            fitness += isNaN(popOffStack) /*|| popOffStack == this.testCases[x][0]*/  ? 9999  : Math.abs(this.testCases[x][1] - popOffStack) ;
-        }
-        
-        if (this.favorSmaller && fitness == 0) fitness = -1 * (1000 - countPoints(pushParseString(code.code)));
-        
-        this.pushPrograms[programX]['fitness'] = fitness;
-        
-        // console.log ("Fitness for program  " + programX + " = " + fitness);
-        
-        // var fitness = this.fitnessFunc(this.pushPrograms[programX])
-    }
+    this.fitnessEvaluate(this.pushPrograms);
     
     updateStatus("Sorting programs by fitness.");
+        
+    this.generations++;
+    
+    this.crossoverAndMutate();
+    
+    this.fitnessEvaluate(this.newPushPrograms);
+
+    workerDebug("programs = " + this.pushPrograms.length);
+    workerDebug("new programs = " + this.newPushPrograms.length);
+
+    this.pushPrograms = [];
+    this.pushPrograms = this.pushPrograms.concat(this.newPushPrograms);
+    // this.pushPrograms = this.newPushPrograms;
+    this.newPushPrograms = [];
     
     this.pushPrograms.sort(function(programA,programB) {
        return programA['fitness'] - programB['fitness'];
     });
 
 	this.currentBestFitness = this.pushPrograms[0]['fitness'];
-	// workerDebug(this.pushPrograms[0]['fitness']);
     
-    // alert("Best program = " + this.pushPrograms[0].code + " fitness = " + this.pushPrograms[0].fitness + " out of " + this.pushPrograms.length);
-    
-    this.generations++;
-    
-
-	// workerDebug ("gen count1 " + this.pushPrograms.length + " new = " + this.newPushPrograms.length) ;
-        this.crossoverAndMutate();
-
-
-
-
     if (this.pushPrograms.length > this.params.maxPopulation) {
         //Cull the most unfit            
         this.pushPrograms.splice(this.params.maxPopulation, this.pushPrograms.length - this.params.maxPopulation);
@@ -125,9 +91,48 @@ PushGP.prototype.doGeneration = function() {
 	
 	// This also might not work, if crossover or mutation functions modify what's passed in!
 		
-    
+    //Push three random programs into the soup
+    for (var randomX = 0; randomX < 10; randomX++)
+        this.newPushPrograms.push({code: randomCode(), fitness: 0});
 
     updateStatus("Do another generation?");
+};
+
+PushGP.prototype.fitnessEvaluate = function(arrayOfPrograms) {
+  for (var programX = 0; programX < arrayOfPrograms.length; programX++)  {
+      updateStatus("Evaluating fitness of program #" + programX + ".");
+      
+      var code = arrayOfPrograms[programX];
+              
+      if (code == undefined || code.code == undefined)
+          continue; //FIXME: why does this happen?
+          
+      if (typeof (code.code) == "number") {
+          arrayOfPrograms[programX]['fitness'] = 999999; //Strongly penalize "programs" that are just a number
+          continue;
+      }
+      
+      var fitness = 0;
+              
+      for (var x = 0; x < this.testCases.length; x++) {
+          
+          // var sub_code = code.code.replace (/x/g, /*" " + */parseFloat(this.testCases[x][0])/* + " "*/);
+
+			//Uses name stack
+        var sub_code = " ( (" + this.testCases[x][0] + " x INTEGER.DEFINE) " + code.code + " ) "; 
+
+        var result = runPush(sub_code);
+
+        //highly penalize programs that don't do anything with int stack, or just return this.testCases[0]
+        var popOffStack = result.intStack.pop();
+
+        fitness += isNaN(popOffStack) /*|| popOffStack == this.testCases[x][0]*/  ? 9999  : Math.abs(this.testCases[x][1] - popOffStack) ;
+      }
+      
+      if (this.favorSmaller && fitness == 0) fitness = -1 * (1000 - countPoints(pushParseString(code.code)));
+      
+      arrayOfPrograms[programX]['fitness'] = fitness;
+  }
 };
 
 PushGP.prototype.tournamentSelect = function() {
@@ -157,6 +162,8 @@ PushGP.prototype.doCrossover = function(program1Array) {
 
 PushGP.prototype.crossoverAndMutate = function() {
 	
+	var cloneCount = 0;
+	
 	for (var programX = 0; programX < this.pushPrograms.length; programX++) {
 		var randInt = parseInt(Math.random() * 100);
 		
@@ -173,6 +180,7 @@ PushGP.prototype.crossoverAndMutate = function() {
 		}
 		else if (randInt < this.params['mutationProbability'] + this.params['cloneProbability']) {
 			this.newPushPrograms.push(this.pushPrograms[programX]);
+			cloneCount ++;
 		}
 		else //Or result of crossover
 		{
@@ -184,6 +192,8 @@ PushGP.prototype.crossoverAndMutate = function() {
 			this.newPushPrograms.push({'code' : newProgramArray.toString(), 'fitness' : 0});
 		}
 	}
+	
+	workerDebug(cloneCount + " clones.");
 }
 
 PushGP.prototype.crossoverAndMutate2 = function() {
