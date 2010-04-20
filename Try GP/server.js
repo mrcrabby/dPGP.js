@@ -3,6 +3,7 @@ var sys = require('sys'),
 http.createServer(function (req, res) {
   setTimeout(function () {
     res.writeHead(200, {'Content-Type': 'text/plain'});
+    http.serverResponse()
     res.write('Hello World');
     res.close();
   }, 2000);
