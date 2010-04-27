@@ -1,0 +1,46 @@
+<html>
+<head>
+	<!-- // <script type="text/javascript" src="gp_worker.js"></script> -->
+	
+	<!-- just a test -->
+	
+	<script  src="static/push.js"></script>
+	<script  src="static/jquery-1.3.2.min.js"></script>
+	<script  src="static/pushgp.js"></script>
+	<!-- // <script type="text/javascript" src="trygp.js"></script> -->
+	<script src="static/gp_controller.js"></script>
+	<script src="static/gp_brain.js"></script>
+	
+	<script>
+	
+	$(document).ready (
+		function()
+		{
+			$('#gpChart').hide();
+			startGPBrain({{ worker_id }});
+
+		});
+
+	</script>
+</head>
+<body>
+
+	<h1>GP Brain</h1>
+	
+	<div>
+		<input type="submit" value="start" id="startButton">		<!-- <input type="submit" value="stop" id="stopButton"> -->
+		<div>
+			<span id="numGenerations">0</span> generations. <span id="doneMsg"></span>
+		</div>
+		
+		<div><img id="gpChart" /></div>
+		
+		<div style="padding:10px;">
+			<!-- <input type="submit" value="dump gp data"> -->
+			<div id="programDump">
+			</div>
+		</div>
+	</div>
+
+</body>
+</html>

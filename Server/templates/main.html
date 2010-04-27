@@ -1,0 +1,25 @@
+<html>
+<head>
+    <title>Distributed Push</title>
+</head>
+
+<h1>Distributed Push.</h1>
+
+<div style="padding:5px">
+    <a href="upload/">Upload</a> a new problem.
+</div>
+
+<div style="padding:10px">
+    {% for problem in problems %}
+        
+        <div style="border-style:solid;border-width:2px;padding:3px">
+            <div>Name: {{ problem.name }}</div>
+            <div>Comments: {{ problem.comments }}</div>
+            
+            <div>Best fitness: undefined</div>
+            <div><a href="/worker{{ problem.id }}">Worker link</a></div>
+        </div>
+        
+    {% end %}
+</div>
+</html>
