@@ -42,7 +42,7 @@ GPWorker.prototype.startGPWorker = function(numGens) {
     for (this.gens = 0; this.gens<numGens; this.gens++) {				
 		var str = pushGP.getProgramsHTMLString();
 			
-		postMessage({programsStr : str, bestFitness : pushGP.currentBestFitness});
+		postMessage({msgtype:"programStr", programsStr : str, bestFitness : pushGP.currentBestFitness});
             
 
         pushGP.doGeneration();            
@@ -55,6 +55,10 @@ onmessage = function(message) {
 	
 	worker.startGPWorker(message.data);
 
+}
+
+function reportUp(msg) {
+    postMessage(msg);
 }
 
 function updateStatus() {

@@ -20,7 +20,12 @@ PushGP = function () {
         'maxPopulation' : 75
     };
     
+    this.generationsSinceLastImprovement = 0;
+    this.lastImprovedFitness = undefined;
+    
 	this.favorSmaller = true;
+	
+	this.reportBestAfter = 0;
 	
     this.generations = 0;
 };
@@ -92,10 +97,19 @@ PushGP.prototype.doGeneration = function() {
 	// This also might not work, if crossover or mutation functions modify what's passed in!
 		
     //Push three random programs into the soup
+    
+    // Upload if necessary
     for (var randomX = 0; randomX < 10; randomX++)
         this.newPushPrograms.push({code: randomCode(), fitness: 0});
 
-    updateStatus("Do another generation?");
+    if(this.currentBestFitness < this.lastImprovedFitness) {
+        this.lastImprovedFitness = this.currentBestFitness;
+        this.generationsSinceLastImprovement = 0;
+    }
+    else
+        this.generationsSinceLastImprovement++;
+    if(this.generationsSinceLastImprovement > this.reportBestAfter)
+        reportUp({'msgtype' : 'uploadProgram', 'msg' : {'program':this.pushPrograms[0], 'generationCount':this.generations}});
 };
 
 PushGP.prototype.fitnessEvaluate = function(arrayOfPrograms) {

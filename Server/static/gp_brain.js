@@ -23,19 +23,28 @@ function startGPBrain(worker_id)
 		if (a.data['msgtype'] == 'debug') {
 			console.log(a.data.msg);
 			return;
-		}		
-		
-		generations++;
-		
-		$('#numGenerations').html(generations);
-
-		if (a.data['bestFitness'] != undefined) {
-			generationFitnesses.push(a.data['bestFitness'] < 0 ? 0 : a.data['bestFitness']);
-			$('#gpChart').show();
-			$('#gpChart').attr('src','http://chart.apis.google.com/chart?cht=lc&chs=150&chd=t:' + generationFitnesses.reduce(function(a,b) {return a + "," + b; } ) );
 		}
+		else if (a.data['msgtype'] == 'uploadProgram'){
+		    a.data['msg']['id']=worker_id;
+		    $.ajax({'url':'uploadresults', 'type':'POST', 'data':JSON.stringify(a.data['msg'])});
+		    console.log("about to upload program!");
+		    console.log(a.data['msg']);
+		    return;
+		}
+		else if (a.data['msgtype'] == 'programStr') {
 		
-		dumpGPData(a.data['programsStr'],a.data['bestFitness']);
+    		generations++;
+		
+    		$('#numGenerations').html(generations);
+
+    		if (a.data['bestFitness'] != undefined) {
+    			generationFitnesses.push(a.data['bestFitness'] < 0 ? 0 : a.data['bestFitness']);
+    			$('#gpChart').show();
+    			$('#gpChart').attr('src','http://chart.apis.google.com/chart?cht=lc&chs=150&chd=t:' + generationFitnesses.reduce(function(a,b) {return a + "," + b; } ) );
+    		}
+		
+    		dumpGPData(a.data['programsStr'],a.data['bestFitness']);
+		}
 	}
 	
 	$('#startButton').click(function() {

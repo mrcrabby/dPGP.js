@@ -1,4 +1,5 @@
 import os
+import json
 
 import tornado.httpserver
 import tornado.ioloop
@@ -31,6 +32,10 @@ class WorkerHandler(tornado.web.RequestHandler):
 class WorkerJSHandler(tornado.web.RequestHandler):
     def get(self,worker_id):
         self.render("templates/gp_worker.js", fitness_cases=db.getFitnessCases(worker_id))
+class ResultsUploadHandler(tornado.web.RequestHandler):
+    def post(self):
+        # uploadedData = json.loads(self.ge)
+        print self.request.arguments
 
 settings = {"static_path": os.path.join(os.path.dirname(__file__), "static") }
 
@@ -39,7 +44,8 @@ application = tornado.web.Application([
     (r"/upload/", UploadHandler),
     (r"/new_problem", UploadFormHandler),
     (r"/gp_worker([0-9]+)\.js", WorkerJSHandler),
-    (r"/worker([0-9]+)", WorkerHandler)
+    (r"/worker([0-9]+)", WorkerHandler),
+    (r"/uploadresults", ResultsUploadHandler)
 
 ], **settings)
 

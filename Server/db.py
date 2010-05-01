@@ -14,6 +14,9 @@ def getFitnessCases(problem_id):
     c=getConnection()
     
     return [case for case in c.query("SELECT * FROM fitness_cases WHERE problem_id = %s" % problem_id) ]
+    
+def storeWorkerResults(problem_id,program,program_fitness):
+    pass
 
 def importProblemJSON(json_txt):
     try:
