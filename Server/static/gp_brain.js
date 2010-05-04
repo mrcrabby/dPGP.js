@@ -8,6 +8,8 @@ var timeStarted = undefined;
 
 var generationFitnesses = [];
 
+var worker = undefined;
+
 if (!runInWorker) {
 	function updateStatus() {};
 }
@@ -46,6 +48,18 @@ function startGPBrain(problem_id,client_id)
     		}
 		
     		dumpGPData(a.data['programsStr'],a.data['bestFitness']);
+    		
+    		worker.postMessage({'msgtype' : "heartbeat"});
+		}
+		else if(a.data['msgtype'] == 'downloadPrograms') {
+		    $.ajax({url:'requestprograms'+problem_id+'&num_programs='+a.data['msg']['numPrograms'],
+		            type:'GET',
+		            dataType:'json',
+		            success:function(json){
+		                console.log("from server:"+json);
+                        // console.log(JSON.parse(text));
+                		worker.postMessage({'msgtype' : "addPrograms", "msg":json});
+		            }});
 		}
 	}
 	
@@ -56,11 +70,11 @@ function startGPBrain(problem_id,client_id)
 		// var worker = JsWorker.createWorkerFromUrl("gp_worker.js", onMessage);
 
 		if (runInWorker) {
-			var worker = new Worker('gp_worker' + problem_id +'.js');
+			worker = new Worker('gp_worker' + problem_id +'.js');
 
 			worker.onmessage = onMessage;
 			worker.onerror = function (err) {alert ('Error! ' + err);};
-			worker.postMessage(100000);
+			worker.postMessage("start");
 			// worker.postMessage("start");
 		}
 		else

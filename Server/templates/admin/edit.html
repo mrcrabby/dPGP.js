@@ -15,6 +15,7 @@
 		<div style="border-style:solid;border-width:2px;padding:3px">
 			<div>Name: <input type="text" name="name" value="{{ problem.name}}" id="name" /><div>
 			<div>Comments: <input type="text" name="comments" value="{{ problem.comments }}" id="comments" /></div>
+			<div>Allowed Commands: <textarea name="allowed" rows="8" cols="40">{{ problem.allowed }}</textarea>
 			<div>Evaluated Stack: {{ problem.evaluated_stack }}</div>
 			<div>Start Population: <input type="text" name="start_population" value="{{ problem.start_population }}" id="start_population" /></div>
 			<div>Max Population: <input type="text" name="max_population" value="{{ problem.max_population }}" id="max_population" /></div>

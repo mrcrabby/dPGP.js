@@ -9,7 +9,7 @@ PushGP = function () {
     this.testCases = [[0,0]];
     this.fitnessFunc = function(a) { return 0; };
 
-	this.currentBestFitness = undefined;
+	this.currentBestFitness = 99999;
     
     this.params = {
         'crossoverPercentile' : 2,
@@ -17,15 +17,18 @@ PushGP = function () {
 		'cloneProbability' : 10,
         'startPopulation' : 20,
         'tournamentSize' : 10,
-        'maxPopulation' : 75
+        'maxPopulation' : 75,
+        'stagnantGenerations' : 10,
+        'reportAfter' : 1,
+        'numProgramsToDownload' : 2
     };
     
     this.generationsSinceLastImprovement = 0;
-    this.lastImprovedFitness = undefined;
+    this.generationsSinceLastReported = 0;
     
 	this.favorSmaller = true;
 	
-	this.reportBestAfter = 0;
+    // this.reportBestAfter = 0;
 	
     this.generations = 0;
 };
@@ -51,6 +54,13 @@ PushGP.prototype.startGP = function (testCases,fitnessFunc,params) {
         // this.pushPrograms[0].code = "( 1337 x 1 INTEGER.+ 2 INTEGER.* )";
 
 };
+
+PushGP.prototype.addPrograms = function(arrayOfNewPrograms) {
+    for (var programX = 0; programX < arrayOfNewPrograms.length; programX++) {
+        this.pushPrograms.push ({code: arrayOfNewPrograms[programX], fitness : 0});
+        workerDebug ("adding " + arrayOfNewPrograms[programX]);
+    }
+}
 
 PushGP.prototype.doGeneration = function() {
     // for (var programX in this.pushPrograms) {
@@ -79,7 +89,14 @@ PushGP.prototype.doGeneration = function() {
        return programA['fitness'] - programB['fitness'];
     });
 
-	this.currentBestFitness = this.pushPrograms[0]['fitness'];
+    if(this.pushPrograms[0]['fitness'] < this.currentBestFitness) {
+        this.currentBestFitness = this.pushPrograms[0]['fitness'];
+        this.generationsSinceLastImprovement = 0;
+    }
+    else
+        this.generationsSinceLastImprovement++;
+
+    this.doUploadAndDownload();
     
     if (this.pushPrograms.length > this.params.maxPopulation) {
         //Cull the most unfit            
@@ -101,20 +118,30 @@ PushGP.prototype.doGeneration = function() {
     // Upload if necessary
     for (var randomX = 0; randomX < 10; randomX++)
         this.newPushPrograms.push({code: randomCode(), fitness: 0});
+};
 
-    if(this.currentBestFitness < this.lastImprovedFitness) {
-        this.lastImprovedFitness = this.currentBestFitness;
-        this.generationsSinceLastImprovement = 0;
+PushGP.prototype.doUploadAndDownload = function () {
+    
+    workerDebug('generationsSinceLastImprovement = ' + this.generationsSinceLastImprovement);
+    
+    workerDebug('this.params.stagnantGenerations = ' + this.params.stagnantGenerations );
+    
+    if(this.generationsSinceLastImprovement > this.params.stagnantGenerations) {
+        //download new programs here!
+        reportUp({'msgtype' : 'downloadPrograms', 'msg' : {'numPrograms': this.params.numProgramsToDownload }});
     }
-    else
-        this.generationsSinceLastImprovement++;
-    if(this.generationsSinceLastImprovement > this.reportBestAfter) {
-        
+
+    if(this.generationsSinceLastReported == this.params.reportAfter) {
+        //do an upload here!
+        this.generationsSinceLastReported = 0;
+
         workerDebug("first: " + this.pushPrograms[0]['code']);
         workerDebug("last: " + this.pushPrograms[this.pushPrograms.length-1]['code']);
         reportUp({'msgtype' : 'uploadProgram', 'msg' : {'program':this.pushPrograms[0], 'generationCount':this.generations}});
     }
-};
+    else
+        this.generationsSinceLastReported++;
+}
 
 PushGP.prototype.fitnessEvaluate = function(arrayOfPrograms) {
   for (var programX = 0; programX < arrayOfPrograms.length; programX++)  {

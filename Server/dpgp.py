@@ -17,7 +17,7 @@ class WorkerHandler(tornado.web.RequestHandler):
 
 class WorkerJSHandler(tornado.web.RequestHandler):
     def get(self,problem_id):
-        self.render("templates/gp_worker.js", fitness_cases=db.getFitnessCases(problem_id))
+        self.render("templates/gp_worker.js", fitness_cases=db.getFitnessCases(problem_id), gp_params=db.getGPParams(problem_id))
 
 class ResultsUploadHandler(tornado.web.RequestHandler):
     def post(self):
@@ -28,6 +28,7 @@ class ResultsUploadHandler(tornado.web.RequestHandler):
 class RequestProgramsHandler(tornado.web.RequestHandler):
     def get(self,problem_id,num_programs):
         self.write(str(db.getProgramsForProblem(problem_id,num_programs)))
+        print "gave programs to client"
         # self.write('hi?')   
 
 class AdminHandler(tornado.web.RequestHandler):
@@ -47,13 +48,14 @@ class AdminEditHandler(tornado.web.RequestHandler):
     def post(self,problem_id):
         name = self.get_argument('name')
         comments = self.get_argument('comments')
+        allowed_commands = self.get_argument('allowed_commands')
         start_population = self.get_argument('start_population')
         max_population = self.get_argument('max_population')
         tournament_size = self.get_argument('tournament_size')
         crossover_probability = self.get_argument('crossover_probability')
         mutation_probability = self.get_argument('mutation_probability')
         clone_probability = self.get_argument('clone_probability')
-        db.updateProblem(problem_id,name,comments,start_population,max_population,tournament_size,crossover_probability,mutation_probability,clone_probability)
+        db.updateProblem(problem_id,name,comments,allowed_commands,start_population,max_population,tournament_size,crossover_probability,mutation_probability,clone_probability)
         self.render("templates/admin/edit.html", problem=db.getProblem(problem_id))
 
 

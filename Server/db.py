@@ -9,7 +9,6 @@ def getFreshUUID():
 def getConnection():
     return database.Connection("/tmp/mysql.sock", user="root", database="dpgpjs")
 
-
 def getProblems():
     c=getConnection()
     problems = [problem for problem in c.query("SELECT * FROM problems")]
@@ -23,6 +22,13 @@ def getProblems():
             problem.bestProgram = "none"
     return problems
 
+def getGPParams(problem_id):
+    c=getConnection()
+    
+    problem = c.query("SELECT * FROM problems WHERE id = %s" % problem_id)[0]
+    
+    return problem
+
 def getProblem(problem_id):
     c=getConnection()
     problem = c.query("SELECT * FROM problems WHERE id = %s" % problem_id)[0]
@@ -35,10 +41,10 @@ def getProblem(problem_id):
             problem.bestProgram = "none"
     return problem
 
-def updateProblem(problem_id,name,comments,start_population,max_population,tournament_size,crossover_probability,mutation_probability,clone_probability):
+def updateProblem(problem_id,name,comments,allowed,start_population,max_population,tournament_size,crossover_probability,mutation_probability,clone_probability):
     c=getConnection()
     
-    return c.execute("UPDATE problems SET name = \"%s\", comments = \"%s\", start_population = \"%s\", max_population = \"%s\", tournament_size = \"%s\", crossover_probability = \"%s\", mutation_probability = \"%s\", clone_probability = \"%s\" WHERE id = %s LIMIT 1" % (name, comments, start_population,max_population,tournament_size,crossover_probability,mutation_probability, clone_probability, problem_id))
+    return c.execute("UPDATE problems SET name = \"%s\", comments = \"%s\", allowed = \"%s\" start_population = \"%s\", max_population = \"%s\", tournament_size = \"%s\", crossover_probability = \"%s\", mutation_probability = \"%s\", clone_probability = \"%s\" WHERE id = %s LIMIT 1" % (name, comments, allowed, start_population,max_population,tournament_size,crossover_probability,mutation_probability, clone_probability, problem_id))
     
 def getProgramsForProblem(problem_id,num_programs):
     c=getConnection()
@@ -47,7 +53,7 @@ def getProgramsForProblem(problem_id,num_programs):
     
     results = c.query(sql)
 
-    return [result['program_string'] for result in results]
+    return '[' + ",".join (["\"%s\"" % result['program_string'] for result in results]) + ']'
 
 def getFitnessCases(problem_id):
     c=getConnection()
@@ -76,9 +82,17 @@ def importProblemJSON(json_txt):
     
     fitness_cases = json_obj['fitness_cases']
     
+    json_obj['allowed'] =  '[' + ",".join (['"%s"' % str(string) for string in json_obj['allowed']]) + ']'
+    
     del json_obj['fitness_cases']
     
-    rowid = c.execute ("INSERT INTO problems (%s) VALUES (%s)" % (",".join(["`%s`" % x for x in json_obj.keys()]),  ",".join([ ["'%s'" % x,str(x)][type(x) != str and type(x) != unicode]  for x in json_obj.values()]) ) )
+    sql = "INSERT INTO problems (%s) VALUES (%s)" % (",".join(["`%s`" % x for x in json_obj.keys()]),  ",".join([ ["'%s'" % x,str(x)][type(x) != str and type(x) != unicode]  for x in json_obj.values()]) )
+    
+    sql = sql.replace('%','%%')
+    
+    print "sql = %s" % sql
+    
+    rowid = c.execute (sql)
     
     for case in fitness_cases[0]:
         initializer = "( %s x INTEGER.DEFINE )" % case['x1'] #for now, assume int stack and only 1 x value.

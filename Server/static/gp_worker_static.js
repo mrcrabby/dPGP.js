@@ -1,11 +1,13 @@
 
 var pushGP;
 
+var worker = null;
+
 GPWorker = function () {
 	this.gens = 0;
 };
 
-GPWorker.prototype.startGPWorker = function(numGens) {
+GPWorker.prototype.startGPWorker = function(msg) {
 	
     // var numGens = message.data;
 
@@ -37,24 +39,41 @@ GPWorker.prototype.startGPWorker = function(numGens) {
         return;
     }
 
-    pushGP = new PushGP();  
+    pushGP = new PushGP(gp_params);  
     pushGP.startGP(cases);/*[[0,1],[2,5],[3,100]]);*/        
-    for (this.gens = 0; this.gens<numGens; this.gens++) {				
-		var str = pushGP.getProgramsHTMLString();
+    // for (this.gens = 0; this.gens<numGens; this.gens++) {                
+
 			
-		postMessage({msgtype:"programStr", programsStr : str, bestFitness : pushGP.currentBestFitness});
-            
+        doPushGen();
+        // postMessage("did one!")         ;
 
-        pushGP.doGeneration();            
-
-    }
+    // }
 };
 
 onmessage = function(message) {
-	var worker = new GPWorker();
-	
-	worker.startGPWorker(message.data);
+    if (worker == undefined) {
+        worker = new GPWorker();
 
+        worker.startGPWorker(message.data);
+    }
+    else if (message.data['msgtype'] == "heartbeat")
+    // workerDebug(pushGP);
+    {
+        doPushGen();
+        
+    }
+    else if (message.data['msgtype'] == "addPrograms"){
+        pushGP.addPrograms(message.data['msg']);
+    }
+        
+        
+}
+
+function doPushGen(){
+    pushGP.doGeneration();
+    
+    var str = pushGP.getProgramsHTMLString();        
+	postMessage({msgtype:"programStr", programsStr : str, bestFitness : pushGP.currentBestFitness});
 }
 
 function reportUp(msg) {
