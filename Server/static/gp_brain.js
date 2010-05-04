@@ -12,7 +12,7 @@ if (!runInWorker) {
 	function updateStatus() {};
 }
 
-function startGPBrain(worker_id)
+function startGPBrain(problem_id,client_id)
 {
 	// testGP();
 	// start();
@@ -25,8 +25,10 @@ function startGPBrain(worker_id)
 			return;
 		}
 		else if (a.data['msgtype'] == 'uploadProgram'){
-		    a.data['msg']['id']=worker_id;
+		    a.data['msg']['problem_id']=problem_id;
+		    a.data['msg']['client_id']=client_id;
 		    $.ajax({'url':'uploadresults', 'type':'POST', 'data':JSON.stringify(a.data['msg'])});
+		    console.log(JSON.stringify(a.data['msg']));
 		    console.log("about to upload program!");
 		    console.log(a.data['msg']);
 		    return;
@@ -54,7 +56,7 @@ function startGPBrain(worker_id)
 		// var worker = JsWorker.createWorkerFromUrl("gp_worker.js", onMessage);
 
 		if (runInWorker) {
-			var worker = new Worker('gp_worker' + worker_id +'.js');
+			var worker = new Worker('gp_worker' + problem_id +'.js');
 
 			worker.onmessage = onMessage;
 			worker.onerror = function (err) {alert ('Error! ' + err);};

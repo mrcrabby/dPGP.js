@@ -1,6 +1,10 @@
 import tornado.database as database
 
+from uuid import uuid4
 import json
+
+def getFreshUUID():
+    return uuid4().hex
 
 def getConnection():
     return database.Connection("/tmp/mysql.sock", user="root", database="dpgpjs")
@@ -9,14 +13,32 @@ def getProblems():
     c=getConnection()
     
     return [problem for problem in c.query("SELECT * FROM problems")]
+    
+def getProgramsForProblem(problem_id,num_programs):
+    c=getConnection()
+    
+    sql = "SELECT * FROM programs WHERE problem = %s ORDER BY fitness,RAND() DESC LIMIT 0,%s" % (problem_id,num_programs)
+    
+    results = c.query(sql)
+
+    return [result['program_string'] for result in results]
         
 def getFitnessCases(problem_id):
     c=getConnection()
     
     return [case for case in c.query("SELECT * FROM fitness_cases WHERE problem_id = %s" % problem_id) ]
     
-def storeWorkerResults(problem_id,program,program_fitness):
-    pass
+def storeWorkerResults(problem_id,program,program_fitness,client_id):
+    c=getConnection()
+    
+    print problem_id 
+    print program
+    print program_fitness
+    print client_id
+    
+    sql = "INSERT INTO programs (`problem`,`program_string`,`fitness`,`client_id`) VALUES (%s,\'%s\',%s,\'%s\')" % (problem_id,program.replace('%','%%'),program_fitness,client_id)
+
+    c.execute(sql)
 
 def importProblemJSON(json_txt):
     try:

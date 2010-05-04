@@ -108,8 +108,12 @@ PushGP.prototype.doGeneration = function() {
     }
     else
         this.generationsSinceLastImprovement++;
-    if(this.generationsSinceLastImprovement > this.reportBestAfter)
+    if(this.generationsSinceLastImprovement > this.reportBestAfter) {
+        
+        workerDebug("first: " + this.pushPrograms[0]['code']);
+        workerDebug("last: " + this.pushPrograms[this.pushPrograms.length-1]['code']);
         reportUp({'msgtype' : 'uploadProgram', 'msg' : {'program':this.pushPrograms[0], 'generationCount':this.generations}});
+    }
 };
 
 PushGP.prototype.fitnessEvaluate = function(arrayOfPrograms) {
