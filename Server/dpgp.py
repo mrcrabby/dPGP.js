@@ -10,39 +10,37 @@ import db
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
         self.render("templates/main.html", problems=db.getProblems())
+            
+class WorkerHandler(tornado.web.RequestHandler):
+    def get(self,worker_id):
+        self.render("templates/worker.html", worker_id = worker_id, client_id = db.getFreshUUID())
 
-class UploadHandler(tornado.web.RequestHandler):
-    def get(self):
-        self.render("templates/upload.html")
+class WorkerJSHandler(tornado.web.RequestHandler):
+    def get(self,problem_id):
+        self.render("templates/gp_worker.js", fitness_cases=db.getFitnessCases(problem_id))
 
-class UploadFormHandler(tornado.web.RequestHandler):
-    # TODO: after git merge, switch upload to admin
+class ResultsUploadHandler(tornado.web.RequestHandler):
+    def post(self):
+        uploadedData = json.loads(self.request.body)
+        # print uploadedData
+        db.storeWorkerResults(uploadedData['problem_id'],uploadedData['program']['code'],uploadedData['program']['fitness'],uploadedData['client_id'])
+        
+class RequestProgramsHandler(tornado.web.RequestHandler):
+    def get(self,problem_id,num_programs):
+        self.write(str(db.getProgramsForProblem(problem_id,num_programs)))
+        # self.write('hi?')   
+
+class AdminHandler(tornado.web.RequestHandler):
     def get(self):
-        self.render("templates/error.html")
-    
+        self.render("templates/admin/index.html",problems=db.getProblems())
+class AdminUploadHandler(tornado.web.RequestHandler):
+    def get(self):
+        self.render("templates/admin/upload.html")    
     def post(self):
         if db.importProblemJSON(self.get_argument('config_json')) == False:
             self.write ('Invalid JSON.')
         else:
             self.redirect("/")
-            
-class WorkerHandler(tornado.web.RequestHandler):
-    def get(self,worker_id):
-        self.render("templates/worker.html", worker_id = worker_id)
-
-class WorkerJSHandler(tornado.web.RequestHandler):
-    def get(self,worker_id):
-        self.render("templates/gp_worker.js", fitness_cases=db.getFitnessCases(worker_id))
-
-class ResultsUploadHandler(tornado.web.RequestHandler):
-    def post(self):
-        # uploadedData = json.loads(self.ge)
-        print self.request.arguments
-
-class AdminHandler(tornado.web.RequestHandler):
-    def get(self):
-        self.render("templates/admin/index.html",problems=db.getProblems())
-
 class AdminEditHandler(tornado.web.RequestHandler):
     def get(self,problem_id):
         self.render("templates/admin/edit.html",problem=db.getProblem(problem_id))
@@ -63,12 +61,12 @@ settings = {"static_path": os.path.join(os.path.dirname(__file__), "static") }
 
 application = tornado.web.Application([
     (r"/", MainHandler),
-    (r"/upload/", UploadHandler),
-    (r"/new_problem", UploadFormHandler),
     (r"/gp_worker([0-9]+)\.js", WorkerJSHandler),
     (r"/worker([0-9]+)", WorkerHandler),
     (r"/uploadresults", ResultsUploadHandler),
+    (r"/requestprograms([0-9]+)\&num_programs\=([0-9]+)", RequestProgramsHandler),
     (r"/admin", AdminHandler),
+    (r"/admin/upload/", AdminUploadHandler),
     (r"/admin/edit([0-9]+)", AdminEditHandler)
 
 ], **settings)

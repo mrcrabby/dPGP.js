@@ -13,12 +13,12 @@
 	<script src="static/gp_brain.js"></script>
 	
 	<script>
-	
+
 	$(document).ready (
 		function()
 		{
 			$('#gpChart').hide();
-			startGPBrain({{ worker_id }});
+			startGPBrain({{ worker_id }},"{{ client_id }}");
 
 		});
 
