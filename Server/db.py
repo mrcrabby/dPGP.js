@@ -5,11 +5,36 @@ import json
 def getConnection():
     return database.Connection("/tmp/mysql.sock", user="root", database="dpgpjs")
 
+
 def getProblems():
     c=getConnection()
+    problems = [problem for problem in c.query("SELECT * FROM problems")]
+    for problem in problems:
+        program = c.query("SELECT * FROM programs WHERE problem = %s ORDER BY fitness DESC LIMIT 1" % problem.id)
+        if(len(program) != 0):
+            problem.bestFitness = program[0].fitness
+            problem.bestProgram = program[0].program_string
+        else:
+            problem.bestFitness = "none"
+            problem.bestProgram = "none"
+    return problems
+
+def getProblem(problem_id):
+    c=getConnection()
+    problem = c.query("SELECT * FROM problems WHERE id = %s" % problem_id)[0]
+    program = c.query("SELECT * FROM programs WHERE problem = %s ORDER BY fitness DESC LIMIT 1" % problem.id)
+    if(len(program) < 0):
+        problem.bestFitness = program.fitness
+        problem.bestProgram = program[0].program_string
+    else:    
+            problem.bestFitness = "none"
+            problem.bestProgram = "none"
+    return problem
+
+def updateProblem(problem_id,name,comments,start_population,max_population,tournament_size,crossover_probability,mutation_probability,clone_probability):
+    c=getConnection()
     
-    return [problem for problem in c.query("SELECT * FROM problems")]
-        
+    return c.execute("UPDATE problems SET name = \"%s\", comments = \"%s\", start_population = \"%s\", max_population = \"%s\", tournament_size = \"%s\", crossover_probability = \"%s\", mutation_probability = \"%s\", clone_probability = \"%s\" WHERE id = %s LIMIT 1" % (name, comments, start_population,max_population,tournament_size,crossover_probability,mutation_probability, clone_probability, problem_id))
 def getFitnessCases(problem_id):
     c=getConnection()
     

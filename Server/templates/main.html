@@ -15,8 +15,8 @@
         <div style="border-style:solid;border-width:2px;padding:3px">
             <div>Name: {{ problem.name }}</div>
             <div>Comments: {{ problem.comments }}</div>
-            
-            <div>Best fitness: undefined</div>
+            <div>Best fitness: {{ problem.bestFitness }}</div>
+            <div>Best program: {{ problem.bestProgram }}</div>
             <div><a href="/worker{{ problem.id }}">Worker link</a></div>
         </div>
         

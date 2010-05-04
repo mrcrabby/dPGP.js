@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+	"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>dPGP.js Admin</title>
+	
+</head>
+
+<body>
+	<a href="/">Back to index</a><br/>
+	<a href="/admin">Back to admin index</a>
+	<form action="/admin/edit{{ problem.id }}" method="post" accept-charset="utf-8">
+		<div style="border-style:solid;border-width:2px;padding:3px">
+			<div>Name: <input type="text" name="name" value="{{ problem.name}}" id="name" /><div>
+			<div>Comments: <input type="text" name="comments" value="{{ problem.comments }}" id="comments" /></div>
+			<div>Evaluated Stack: {{ problem.evaluated_stack }}</div>
+			<div>Start Population: <input type="text" name="start_population" value="{{ problem.start_population }}" id="start_population" /></div>
+			<div>Max Population: <input type="text" name="max_population" value="{{ problem.max_population }}" id="max_population" /></div>
+			<div>Tournament Size: <input type="text" name="tournament_size" value="{{ problem.tournament_size }}" id="tournament_size" /></div>
+			<div>Crossover Probability: <input type="text" name="crossover_probability" value="{{ problem.crossover_probability }}" id="crossover_probability" /></div>
+			<div>Mutation Probability: <input type="text" name="mutation_probability" value="{{ problem.mutation_probability }}" id="mutation_probability" /></div>
+			<div>Clone Probability: <input type="text" name="clone_probability" value="{{ problem.clone_probability }}" id="clone_probability" /></div>
+			<div>Best fitness: {{ problem.bestFitness }}</div>
+			<div><a href="/worker{{ problem.id }}">Worker link</a></div>
+			<div><input type="submit" value="Edit"></div>
+		</div>
+	</form>
+
+</body>
+</html>
