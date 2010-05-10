@@ -16,7 +16,8 @@ var gp_params = {
         'startPopulation' : {{ gp_params.start_population }},
         'tournamentSize' : {{ gp_params.tournament_size }},
         'maxPopulation' : {{ gp_params.max_population }},
-        'stagnantGenerations' : 0,
-        'numProgramsToDownload' : 2
+        'stagnantGenerations' : {{ gp_params.stagnant_generations }},
+        'numProgramsToDownload' : {{ gp_params.num_programs_to_download }}
     };
+
 var pushScriptFuncs = {{ gp_params.allowed }};

@@ -1,19 +1,38 @@
 import tornado.database as database
+from time import time
 
 from uuid import uuid4
 import json
 
-def getFreshUUID():
-    return uuid4().hex
-
 def getConnection():
     return database.Connection("/tmp/mysql.sock", user="root", database="dpgpjs")
+
+def createClientForProblem(problem_id):
+    c=getConnection()
+    num_islands = c.query("SELECT num_islands FROM problems WHERE id = %s LIMIT 1" % problem_id)[0]['num_islands']
+    island_counts = c.query("SELECT island, COUNT(island) as num_on_island FROM clients WHERE problem_id = %s and last_seen > %s GROUP BY island" % (problem_id,int(time())-60)) # checks that the client has checked in within a minute
+    island_list = [[i,0] for i in range(num_islands)]
+    
+    for count in island_counts:
+        island_list[count['island']][1] += count['num_on_island']
+        
+    island_list.sort(cmp=lambda x,y: cmp(x[1],y[1]))
+    
+    target_island = island_list[0][0]
+    
+    new_uuid = uuid4().hex
+    insert_sql = "INSERT INTO clients (id,last_seen,island,problem_id) VALUES ('%s', %s, %s, %s)" % (new_uuid, int(time()), target_island, problem_id)
+    
+    c.execute(insert_sql)
+    
+    print island_list
+    return new_uuid
 
 def getProblems():
     c=getConnection()
     problems = [problem for problem in c.query("SELECT * FROM problems")]
     for problem in problems:
-        program = c.query("SELECT * FROM programs WHERE problem = %s ORDER BY fitness DESC LIMIT 1" % problem.id)
+        program = c.query("SELECT * FROM programs WHERE problem = %s ORDER BY fitness LIMIT 1" % problem.id)
         if(len(program) != 0):
             problem.bestFitness = program[0].fitness
             problem.bestProgram = program[0].program_string
@@ -24,7 +43,6 @@ def getProblems():
 
 def getGPParams(problem_id):
     c=getConnection()
-    
     problem = c.query("SELECT * FROM problems WHERE id = %s" % problem_id)[0]
     
     return problem
@@ -41,35 +59,61 @@ def getProblem(problem_id):
             problem.bestProgram = "none"
     return problem
 
+def getClientInfo(client_id):
+    c=getConnection()
+    sql = "SELECT problem_id, island FROM clients WHERE id = '%s' LIMIT 1" % (client_id)
+    fetch = c.query(sql)[0]
+    return fetch
 def updateProblem(problem_id,name,comments,allowed,start_population,max_population,tournament_size,crossover_probability,mutation_probability,clone_probability):
     c=getConnection()
     
     return c.execute("UPDATE problems SET name = \"%s\", comments = \"%s\", allowed = \"%s\" start_population = \"%s\", max_population = \"%s\", tournament_size = \"%s\", crossover_probability = \"%s\", mutation_probability = \"%s\", clone_probability = \"%s\" WHERE id = %s LIMIT 1" % (name, comments, allowed, start_population,max_population,tournament_size,crossover_probability,mutation_probability, clone_probability, problem_id))
     
-def getProgramsForProblem(problem_id,num_programs):
+def getNeighborsForClient(client_id,num_programs):
+    if num_programs == 0: return []
+    
     c=getConnection()
     
-    sql = "SELECT * FROM programs WHERE problem = %s ORDER BY fitness,RAND() DESC LIMIT 0,%s" % (problem_id,num_programs)
+    fetch = getClientInfo(client_id)
     
-    results = c.query(sql)
+    results = c.query("SELECT * FROM programs WHERE problem = %s AND island = %s ORDER BY fitness,RAND() DESC LIMIT 0,%s" % (fetch['problem_id'],fetch['island'],num_programs))
 
-    return '[' + ",".join (["\"%s\"" % result['program_string'] for result in results]) + ']'
+    return results
+
+def getStrangersForClient(client_id,num_programs):
+    if num_programs == 0: return []
+
+    c=getConnection()
+    
+    fetch = getClientInfo(client_id)
+    
+    results = c.query("SELECT * FROM programs WHERE problem = %s AND island <> %s ORDER BY fitness,RAND() DESC LIMIT 0,%s" % (fetch['problem_id'],fetch['island'],num_programs))
+    
+    if len(results) == 0:
+        return []
+    
+    return results
+    
+def getProgramArray(dbArray):
+    return '[' + ",".join (["\"%s\"" % result['program_string'] for result in dbArray]) + ']'
 
 def getFitnessCases(problem_id):
     c=getConnection()
     
     return [case for case in c.query("SELECT * FROM fitness_cases WHERE problem_id = %s" % problem_id) ]
     
-def storeWorkerResults(problem_id,program,program_fitness,client_id):
+def storeWorkerResults(client_id,program,program_fitness):
     c=getConnection()
+    fetch=getClientInfo(client_id)
     
-    print problem_id 
-    print program
-    print program_fitness
-    print client_id
-    
-    sql = "INSERT INTO programs (`problem`,`program_string`,`fitness`,`client_id`) VALUES (%s,\'%s\',%s,\'%s\')" % (problem_id,program.replace('%','%%'),program_fitness,client_id)
+    sql = "INSERT INTO programs (`problem`,`program_string`,`fitness`,`island`,`client_id`) VALUES (%s,\'%s\',%s,%s,\'%s\')" % (fetch['problem_id'],program.replace('%','%%'),program_fitness,fetch['island'],client_id)
 
+    c.execute(sql)
+    
+def setLastSeenToNow(client_id):
+    c=getConnection()
+    sql = "UPDATE clients SET last_seen = %s WHERE id = '%s'" % (time(),client_id)
+    
     c.execute(sql)
 
 def importProblemJSON(json_txt):

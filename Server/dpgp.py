@@ -5,32 +5,48 @@ import tornado.httpserver
 import tornado.ioloop
 import tornado.web
 
+from random import random
+
 import db
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
         self.render("templates/main.html", problems=db.getProblems())
             
+class HeartbeatHandler(tornado.web.RequestHandler):
+    def get(self,client_id):
+        print "receieved heartbeat from client %s" % client_id
+        db.setLastSeenToNow(client_id)
+
 class WorkerHandler(tornado.web.RequestHandler):
-    def get(self,worker_id):
-        self.render("templates/worker.html", worker_id = worker_id, client_id = db.getFreshUUID())
+    def get(self,problem_id):
+        self.render("templates/worker.html", client_id = db.createClientForProblem(problem_id))
 
 class WorkerJSHandler(tornado.web.RequestHandler):
-    def get(self,problem_id):
+    def get(self,client_id):
+        problem_id=db.getClientInfo(client_id)['problem_id']
         self.render("templates/gp_worker.js", fitness_cases=db.getFitnessCases(problem_id), gp_params=db.getGPParams(problem_id))
 
 class ResultsUploadHandler(tornado.web.RequestHandler):
     def post(self):
         uploadedData = json.loads(self.request.body)
         # print uploadedData
-        db.storeWorkerResults(uploadedData['problem_id'],uploadedData['program']['code'],uploadedData['program']['fitness'],uploadedData['client_id'])
+        db.storeWorkerResults(uploadedData['client_id'],uploadedData['program']['code'],uploadedData['program']['fitness'])
         
 class RequestProgramsHandler(tornado.web.RequestHandler):
-    def get(self,problem_id,num_programs):
-        self.write(str(db.getProgramsForProblem(problem_id,num_programs)))
-        print "gave programs to client"
-        # self.write('hi?')   
+    def get(self,client_id,num_programs):
+        client_info = db.getClientInfo(client_id)
 
+        problem_info = db.getProblem(client_info['problem_id'])
+
+        if random() < problem_info['local_fetch_probability']/100.0:
+            program_string = str(db.getProgramArray(db.getNeighborsForClient(client_id,num_programs)))
+        else:
+            strangers = db.getStrangersForClient(client_id,num_programs)
+            programs = strangers + db.getNeighborsForClient(client_id,int(num_programs) - len(strangers))
+            program_string = str(db.getProgramArray(programs))
+        self.write(program_string)
+        print "gave programs to client"
 class AdminHandler(tornado.web.RequestHandler):
     def get(self):
         self.render("templates/admin/index.html",problems=db.getProblems())
@@ -63,10 +79,11 @@ settings = {"static_path": os.path.join(os.path.dirname(__file__), "static") }
 
 application = tornado.web.Application([
     (r"/", MainHandler),
-    (r"/gp_worker([0-9]+)\.js", WorkerJSHandler),
+    (r"/gp_worker([A-Za-z0-9]+)\.js", WorkerJSHandler),
+    (r'/heartbeat([A-Za-z0-9]+)',HeartbeatHandler),
     (r"/worker([0-9]+)", WorkerHandler),
     (r"/uploadresults", ResultsUploadHandler),
-    (r"/requestprograms([0-9]+)\&num_programs\=([0-9]+)", RequestProgramsHandler),
+    (r"/requestprograms([A-Za-z0-9]+)\&num_programs\=([0-9]+)", RequestProgramsHandler),
     (r"/admin", AdminHandler),
     (r"/admin/upload/", AdminUploadHandler),
     (r"/admin/edit([0-9]+)", AdminEditHandler)

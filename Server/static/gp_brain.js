@@ -14,7 +14,7 @@ if (!runInWorker) {
 	function updateStatus() {};
 }
 
-function startGPBrain(problem_id,client_id)
+function startGPBrain(client_id)
 {
 	// testGP();
 	// start();
@@ -27,7 +27,6 @@ function startGPBrain(problem_id,client_id)
 			return;
 		}
 		else if (a.data['msgtype'] == 'uploadProgram'){
-		    a.data['msg']['problem_id']=problem_id;
 		    a.data['msg']['client_id']=client_id;
 		    $.ajax({'url':'uploadresults', 'type':'POST', 'data':JSON.stringify(a.data['msg'])});
 		    console.log(JSON.stringify(a.data['msg']));
@@ -52,7 +51,7 @@ function startGPBrain(problem_id,client_id)
     		worker.postMessage({'msgtype' : "heartbeat"});
 		}
 		else if(a.data['msgtype'] == 'downloadPrograms') {
-		    $.ajax({url:'requestprograms'+problem_id+'&num_programs='+a.data['msg']['numPrograms'],
+		    $.ajax({url:'requestprograms'+client_id+'&num_programs='+a.data['msg']['numPrograms'],
 		            type:'GET',
 		            dataType:'json',
 		            success:function(json){
@@ -69,8 +68,15 @@ function startGPBrain(problem_id,client_id)
 		timeStarted = new Date().getTime();
 		// var worker = JsWorker.createWorkerFromUrl("gp_worker.js", onMessage);
 
+        //Send heartbeats every 30 seconds
+        setInterval(function() {
+            console.log("time to heartbeat the server.");
+            $.ajax({url:'heartbeat'+client_id,
+                    type: 'GET'});
+                    }, 30000);
+
 		if (runInWorker) {
-			worker = new Worker('gp_worker' + problem_id +'.js');
+			worker = new Worker('gp_worker' + client_id +'.js');
 
 			worker.onmessage = onMessage;
 			worker.onerror = function (err) {alert ('Error! ' + err);};
