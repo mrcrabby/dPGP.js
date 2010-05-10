@@ -1,0 +1,59 @@
+{
+    "name": "Symbolic Regression Test 2",
+    
+    "comments" : "y=2x",
+    
+/*    "stagnant_generations" : 20,
+    "immigrant_count" : 2,    
+    "immigrant_percentile": 10,
+    "report_best_after" : 10,
+    
+    'gen_erc'
+    
+    "num_islands" : 3,
+    "island_jump_uploads" : 100,*/
+    
+    "evaluated_stack" : "int",
+
+    "allowed" : ["INTEGER.+","INTEGER.-","INTEGER./","INTEGER.*","INTEGER.%","INTEGER.>","INTEGER.<","INTEGER.=","INTEGER.DUP","INTEGER.FLUSH","INTEGER.FROMFLOAT","INTEGER.MAX","INTEGER.MIN","INTEGER.POP","INTEGER.ROT","INTEGER.SHOVE","INTEGER.STACKDEPTH","INTEGER.SWAP","INTEGER.YANK","INTEGER.YANKDUP","CODE.QUOTE", "CODE.IF", "CODE.DO"],
+    
+    "start_population" : 20,
+    "max_population" : 75,
+    "tournament_size" : 5,
+    "crossover_probability" : 10,
+    "mutation_probability" : 80,
+    "clone_probability" : 10,
+    
+    "fitness_cases" : [
+        [ 
+            {
+                "x1" : 2,
+                "ans" : 4
+            },
+            {
+                "x1" : 3,
+                "ans" : 6
+            },
+            {
+                "x1" : 4,
+                "ans" : 8
+            },
+            
+            {
+                "x1" : -1,
+                "ans" : -2
+            },
+            {
+                "x1" : -2,
+                "ans" : -4
+            },
+            {
+                "x1" : -3,
+                "ans" : -6
+            }
+
+        ]
+    ]
+    
+    
+}
