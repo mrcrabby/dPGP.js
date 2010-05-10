@@ -23,6 +23,8 @@
 			<div>Crossover Probability: <input type="text" name="crossover_probability" value="{{ problem.crossover_probability }}" id="crossover_probability" /></div>
 			<div>Mutation Probability: <input type="text" name="mutation_probability" value="{{ problem.mutation_probability }}" id="mutation_probability" /></div>
 			<div>Clone Probability: <input type="text" name="clone_probability" value="{{ problem.clone_probability }}" id="clone_probability" /></div>
+			<div>Stagnant Generations:<input type="text" name="stagnant_generations" value="{{ gp_params.stagnant_generations }}" id="stagnant_generations" /></div>
+			<div>Number of Programs to Download:<input type="text" name="num_programs_to_download" value="{{ gp_params.num_programs_to_download }}" id="num_programs_to_download" /></div>
 			<div>Best fitness: {{ problem.bestFitness }}</div>
 			<div><a href="/worker{{ problem.id }}">Worker link</a></div>
 			<div><input type="submit" value="Edit"></div>

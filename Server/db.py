@@ -64,10 +64,10 @@ def getClientInfo(client_id):
     sql = "SELECT problem_id, island FROM clients WHERE id = '%s' LIMIT 1" % (client_id)
     fetch = c.query(sql)[0]
     return fetch
-def updateProblem(problem_id,name,comments,allowed,start_population,max_population,tournament_size,crossover_probability,mutation_probability,clone_probability):
+def updateProblem(problem_id,name,comments,allowed,start_population,max_population,tournament_size,crossover_probability,mutation_probability,clone_probability,stagnant_generations,num_programs_to_download):
     c=getConnection()
     
-    return c.execute("UPDATE problems SET name = \"%s\", comments = \"%s\", allowed = \"%s\" start_population = \"%s\", max_population = \"%s\", tournament_size = \"%s\", crossover_probability = \"%s\", mutation_probability = \"%s\", clone_probability = \"%s\" WHERE id = %s LIMIT 1" % (name, comments, allowed, start_population,max_population,tournament_size,crossover_probability,mutation_probability, clone_probability, problem_id))
+    return c.execute("UPDATE problems SET name = \"%s\", comments = \"%s\", allowed = \"%s\" start_population = \"%s\", max_population = \"%s\", tournament_size = \"%s\", crossover_probability = \"%s\", mutation_probability = \"%s\", clone_probability = \"%s\", stagnant_generations = \"%s\", num_programs_to_download = \"%s\" WHERE id = %s LIMIT 1" % (name, comments, allowed, start_population,max_population,tournament_size,crossover_probability,mutation_probability, clone_probability, stagnant_generations, num_programs_to_download, problem_id))
     
 def getNeighborsForClient(client_id,num_programs):
     if num_programs == 0: return []

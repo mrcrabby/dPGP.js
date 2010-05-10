@@ -71,7 +71,9 @@ class AdminEditHandler(tornado.web.RequestHandler):
         crossover_probability = self.get_argument('crossover_probability')
         mutation_probability = self.get_argument('mutation_probability')
         clone_probability = self.get_argument('clone_probability')
-        db.updateProblem(problem_id,name,comments,allowed_commands,start_population,max_population,tournament_size,crossover_probability,mutation_probability,clone_probability)
+        num_programs_to_download = self.get_argument('num_programs_to_download')
+        stagnant_generations = self.get_argument('stagnant_generations')
+        db.updateProblem(problem_id,name,comments,allowed_commands,start_population,max_population,tournament_size,crossover_probability,mutation_probability,clone_probability,stagnant_generations,num_programs_to_download)
         self.render("templates/admin/edit.html", problem=db.getProblem(problem_id))
 
 
