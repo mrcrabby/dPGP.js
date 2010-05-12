@@ -1,0 +1,19 @@
+This is a less then complete read me. This software is fairly difficult to set up at the moment, but everything one needs to do so is here.
+
+Dependancies:
+	Python 2.6 or later
+		http://www.python.org/
+	PycURL
+		http://pycurl.sourceforge.net/
+	MySQL 5.1 or later
+		http://dev.mysql.com/downloads/mysql/
+	MySQL for Python (good luck)
+		http://www.sourceforge.net/projects/mysql-python
+	Tornado Web Sever
+		http://www.tornadoweb.org/
+
+Instructions:
+	Execute schema.sql on MySQL server.
+	Modify db.py to reflect MySQL server settings (port- and socket-based connections work)
+	Run "sudo python dpgp.py"
+	Visit http://localhost:80/admin to get started
